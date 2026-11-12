@@ -4,6 +4,8 @@
 
 A clean, modern front end for the **Student Enrolment and Records Management System** of St. Peter's College — Iligan City.
 
+**[Open the static demo](https://karlcabasagan.github.io/serms-modern/)** — synthetic data only; live database features require the desktop app on the school network.
+
 This folder is a working interface prototype built from the shipped SERMS 3.0.2.11 application. It keeps the school's maroon-and-gold identity, reorganises the old module/menu structure around the student record, and runs as a Windows desktop shell.
 
 ![Login](screenshots/01-login.png)
