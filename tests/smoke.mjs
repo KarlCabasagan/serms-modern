@@ -78,6 +78,12 @@ for (const [nav, title] of screens) {
   assert.equal(await page.locator('.page-title').innerText(), title)
 }
 
+await page.locator('.nav-item').filter({ hasText: 'Cashier' }).click()
+await page.locator('#or-lookup').fill('OR-2026-41024')
+await page.getByRole('button', { name: 'Find receipt' }).click()
+assert.equal(await page.locator('.modal__title').innerText(), 'Payment posted')
+await page.getByRole('button', { name: 'Done', exact: true }).click()
+
 const mobile = await browser.newPage({
   viewport: { width: 390, height: 844 },
   isMobile: true,
