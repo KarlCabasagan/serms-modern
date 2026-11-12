@@ -8,11 +8,19 @@ This folder is a working interface prototype built from the shipped SERMS 3.0.2.
 
 ## Run it
 
-### Desktop app (this machine)
+### Desktop app
 
-Double-click **`SERMS Modern.lnk`** or **`SERMS Modern.cmd`**.
+From a fresh clone:
 
-The launcher uses the installed Electron runtime because the generated unsigned `.exe` is blocked by Windows Application Control on this machine. The unpacked app is in `release/win-unpacked/`.
+```powershell
+Copy-Item config\srgb.example.ini config\srgb.ini
+npm install
+npm run build
+npx electron-builder --win dir --x64
+.\SERMS Modern.cmd
+```
+
+The launcher uses the installed Electron runtime to load the bundled `release/win-unpacked/resources/app.asar`. The generated unsigned `.exe` may be blocked by Windows Application Control; the launcher is the reliable local path. `SERMS Modern.lnk` is a machine-local shortcut and is intentionally not committed.
 
 ### Browser development
 
@@ -27,8 +35,8 @@ npm run dev
 ### Rebuild
 
 ```powershell
-npm run build          # TypeScript + Vite
-npm run test:smoke     # Edge + Playwright smoke test
+npm run build            # TypeScript + Vite
+npm run test:smoke       # Edge + Playwright smoke test
 npm run electron:build   # portable target; use --win dir if the 7z step is blocked
 ```
 
