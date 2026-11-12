@@ -225,11 +225,13 @@ export function PaymentDialog({
 export function ReceiptDialog({
   payment,
   student,
+  live = false,
   onClose,
   onToast,
 }: {
   payment: Payment | null
   student: Student | null
+  live?: boolean
   onClose: () => void
   onToast: (title: string, detail?: string) => void
 }) {
@@ -237,9 +239,13 @@ export function ReceiptDialog({
 
   return (
     <Modal
-      eyebrow="Official receipt"
-      title="Payment posted"
-      subtitle="A sample receipt preview. The live version uses the school’s OR layout."
+      eyebrow={live ? 'Official receipt · live record' : 'Official receipt'}
+      title={live ? 'Receipt reprint' : 'Payment posted'}
+      subtitle={
+        live
+          ? 'Read directly from srgb.payment. The official OR print layout is still being matched.'
+          : 'A sample receipt preview. The live version uses the school’s OR layout.'
+      }
       onClose={onClose}
       footer={
         <>
@@ -298,7 +304,7 @@ export function ReceiptDialog({
             <strong>{formatMoney(payment.amount)}</strong>
           </div>
           <div className="receipt__foot">
-            This is a sample preview generated from demo data.
+            {live ? 'Reprinted from live school records.' : 'This is a sample preview generated from demo data.'}
             <br />
             Thank you. Keep this receipt for your records.
           </div>

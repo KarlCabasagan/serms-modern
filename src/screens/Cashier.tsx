@@ -15,6 +15,7 @@ import type { Payment, Student } from '../types'
 import { formatCompactMoney, formatDate, formatMoney, fullName, todayIso } from '../lib/format'
 import { Badge, EmptyState, InfoStrip } from '../components/ui'
 import { PageHeader } from '../components/AppShell'
+import { ReceiptDialog } from '../components/PaymentDialog'
 
 export default function Cashier({
   students,
@@ -33,6 +34,7 @@ export default function Cashier({
 }) {
   const [query, setQuery] = useState('')
   const [orQuery, setOrQuery] = useState('')
+  const [receipt, setReceipt] = useState<Payment | null>(null)
   const today = todayIso()
   const todayPayments = payments.filter((payment) => payment.date === today)
   const todayTotal = todayPayments.reduce((sum, payment) => sum + payment.amount, 0)
@@ -52,10 +54,11 @@ export default function Cashier({
 
   function lookupReceipt() {
     const found = payments.find((payment) => payment.orno.toLowerCase() === orQuery.trim().toLowerCase())
-    onToast(
-      found ? 'Receipt found' : 'No receipt in the sample',
-      found ? `${found.orno} · ${formatMoney(found.amount)} · ${formatDate(found.date)}` : 'Check the OR number and try again.',
-    )
+    if (found) {
+      setReceipt(found)
+      return
+    }
+    onToast('No receipt in the sample', 'Check the OR number and try again.')
   }
 
   return (
@@ -360,6 +363,16 @@ export default function Cashier({
             : <>Payments post directly to <strong>srgb.payment</strong> and the collection tables on the school server. The app does not introduce a separate upload or sync service.</>}
         </InfoStrip>
       </div>
+
+      {receipt && (
+        <ReceiptDialog
+          payment={receipt}
+          student={students.find((student) => student.id === receipt.studentId) ?? null}
+          live={readOnly}
+          onClose={() => setReceipt(null)}
+          onToast={onToast}
+        />
+      )}
     </div>
   )
 }
