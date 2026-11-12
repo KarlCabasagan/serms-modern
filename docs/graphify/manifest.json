@@ -1,0 +1,128 @@
+{
+  "App.tsx": {
+    "mtime": 1794504668.9928021,
+    "seen": 1794505843.2332232,
+    "ast_hash": "cd9d82fbadb65b0e688dc1cb3a203e2e",
+    "semantic_hash": "cd9d82fbadb65b0e688dc1cb3a203e2e"
+  },
+  "components/AppShell.tsx": {
+    "mtime": 1794503188.5198307,
+    "seen": 1794505843.2332377,
+    "ast_hash": "8d505653d0213a725ee57737c95f324e",
+    "semantic_hash": "8d505653d0213a725ee57737c95f324e"
+  },
+  "components/CommandPalette.tsx": {
+    "mtime": 1794503185.7137604,
+    "seen": 1794505843.233245,
+    "ast_hash": "038296ba388861ae11ed07d3e651dc13",
+    "semantic_hash": "038296ba388861ae11ed07d3e651dc13"
+  },
+  "components/GradeSheet.tsx": {
+    "mtime": 1794503368.6773684,
+    "seen": 1794505843.2332487,
+    "ast_hash": "53697df3866025bb49fb2d292cdc3bb1",
+    "semantic_hash": "53697df3866025bb49fb2d292cdc3bb1"
+  },
+  "components/PaymentDialog.tsx": {
+    "mtime": 1794502769.9402826,
+    "seen": 1794505843.2332525,
+    "ast_hash": "4c83f46f482be2afb7461f8c3097dca5",
+    "semantic_hash": "4c83f46f482be2afb7461f8c3097dca5"
+  },
+  "components/StudentDialog.tsx": {
+    "mtime": 1794504660.8860831,
+    "seen": 1794505843.2332556,
+    "ast_hash": "f0a756db320e9a302fad1030bd65dbc1",
+    "semantic_hash": "f0a756db320e9a302fad1030bd65dbc1"
+  },
+  "components/ui.tsx": {
+    "mtime": 1794505184.866056,
+    "seen": 1794505843.2332592,
+    "ast_hash": "ce5889e261e2049482505b818ddaad27",
+    "semantic_hash": "ce5889e261e2049482505b818ddaad27"
+  },
+  "data/mock.ts": {
+    "mtime": 1794502574.992556,
+    "seen": 1794505843.233262,
+    "ast_hash": "e6b9f449ee2bd60e576bd69534f285c5",
+    "semantic_hash": "e6b9f449ee2bd60e576bd69534f285c5"
+  },
+  "electron.d.ts": {
+    "mtime": 1794503449.7363093,
+    "seen": 1794505843.2332654,
+    "ast_hash": "f743107b674a9d2692e191ec3ed4e786",
+    "semantic_hash": "f743107b674a9d2692e191ec3ed4e786"
+  },
+  "lib/format.ts": {
+    "mtime": 1794502535.8655427,
+    "seen": 1794505843.2332687,
+    "ast_hash": "49d11a9ec86e6791b95078e9eebacf48",
+    "semantic_hash": "49d11a9ec86e6791b95078e9eebacf48"
+  },
+  "main.tsx": {
+    "mtime": 1794502580.2349815,
+    "seen": 1794505843.2332718,
+    "ast_hash": "f78878ef054e4e8e47f5e62acf408040",
+    "semantic_hash": "f78878ef054e4e8e47f5e62acf408040"
+  },
+  "screens/Academics.tsx": {
+    "mtime": 1794503346.7686965,
+    "seen": 1794505843.233276,
+    "ast_hash": "158e5f54025d1701dbe6b0717f7ad7a8",
+    "semantic_hash": "158e5f54025d1701dbe6b0717f7ad7a8"
+  },
+  "screens/Administration.tsx": {
+    "mtime": 1794503473.800596,
+    "seen": 1794505843.2332795,
+    "ast_hash": "6b07365b082a98c209209d004b756b39",
+    "semantic_hash": "6b07365b082a98c209209d004b756b39"
+  },
+  "screens/Cashier.tsx": {
+    "mtime": 1794502957.681717,
+    "seen": 1794505843.2332828,
+    "ast_hash": "f1da416e1c55b4b0806e7fee3e6c0e7a",
+    "semantic_hash": "f1da416e1c55b4b0806e7fee3e6c0e7a"
+  },
+  "screens/Dashboard.tsx": {
+    "mtime": 1794502961.4514256,
+    "seen": 1794505843.2332857,
+    "ast_hash": "4897435e7d0203ba7ef6e8bfe6182cd8",
+    "semantic_hash": "4897435e7d0203ba7ef6e8bfe6182cd8"
+  },
+  "screens/Login.tsx": {
+    "mtime": 1794502667.9040716,
+    "seen": 1794505843.2332888,
+    "ast_hash": "f8032e46f3c79f98253c66650734cfb6",
+    "semantic_hash": "f8032e46f3c79f98253c66650734cfb6"
+  },
+  "screens/Registration.tsx": {
+    "mtime": 1794502957.7194736,
+    "seen": 1794505843.2332919,
+    "ast_hash": "78133e78bce5849cd16741786ca1fe96",
+    "semantic_hash": "78133e78bce5849cd16741786ca1fe96"
+  },
+  "screens/Reports.tsx": {
+    "mtime": 1794503188.4860644,
+    "seen": 1794505843.2332952,
+    "ast_hash": "52accc6c7f937a9d65f386b86bc5410e",
+    "semantic_hash": "52accc6c7f937a9d65f386b86bc5410e"
+  },
+  "screens/StudentWorkspace.tsx": {
+    "mtime": 1794503140.6688647,
+    "seen": 1794505843.233298,
+    "ast_hash": "33355fae9020bc6b5001a682c8745f50",
+    "semantic_hash": "33355fae9020bc6b5001a682c8745f50"
+  },
+  "screens/Students.tsx": {
+    "mtime": 1794504672.6967833,
+    "seen": 1794505843.2333014,
+    "ast_hash": "cd65540a4ef78bbed02b299f4c704f8d",
+    "semantic_hash": "cd65540a4ef78bbed02b299f4c704f8d"
+  },
+  "types.ts": {
+    "mtime": 1794502670.4570127,
+    "seen": 1794505843.2333043,
+    "ast_hash": "c4f784ba8928e06972f8cbd6d1e77c1e",
+    "semantic_hash": "c4f784ba8928e06972f8cbd6d1e77c1e"
+  }
+}

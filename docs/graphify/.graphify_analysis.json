@@ -1,0 +1,312 @@
+{
+  "communities": {
+    "0": [
+      "components_appshell_pageheader",
+      "components_studentdialog",
+      "components_studentdialog_programs",
+      "components_studentdialog_studentdialog",
+      "components_studentdialog_studentdialog_submit",
+      "components_ui",
+      "components_ui_badge",
+      "components_ui_badgetone",
+      "components_ui_emptystate",
+      "components_ui_infostrip",
+      "components_ui_modal",
+      "data_mock_currentterm",
+      "data_mock_reports",
+      "ref_lucide_react",
+      "ref_react",
+      "screens_administration",
+      "screens_administration_administration",
+      "screens_administration_administration_testconnection",
+      "screens_administration_connectionstate",
+      "screens_cashier",
+      "screens_registration",
+      "screens_registration_registration",
+      "screens_reports",
+      "screens_reports_categories",
+      "screens_reports_reports",
+      "screens_reports_reports_generate",
+      "screens_reports_reports_togglefavorite",
+      "screens_students",
+      "screens_students_statusfilters",
+      "screens_students_students",
+      "types_reportdef"
+    ],
+    "1": [
+      "app",
+      "components_paymentdialog",
+      "data_mock",
+      "data_mock_activities",
+      "data_mock_cashiers",
+      "data_mock_catalog",
+      "data_mock_computeassessment",
+      "data_mock_enrollments",
+      "data_mock_faculty",
+      "data_mock_getpayments",
+      "data_mock_offerings",
+      "data_mock_payments",
+      "data_mock_programinfo",
+      "data_mock_rooms",
+      "data_mock_schedules",
+      "data_mock_sections",
+      "data_mock_seedpayments",
+      "data_mock_seeds",
+      "data_mock_students",
+      "data_mock_subjects",
+      "data_mock_terms",
+      "lib_format_makeorno",
+      "screens_studentworkspace",
+      "screens_studentworkspace_tabkey",
+      "screens_studentworkspace_tabs",
+      "types_payment",
+      "types_subject",
+      "types_term"
+    ],
+    "2": [
+      "app_app",
+      "app_app_addstudent",
+      "app_app_changerole",
+      "app_app_navigate",
+      "app_app_notify",
+      "app_app_openpayment",
+      "app_app_openstudent",
+      "app_app_recordpayment",
+      "app_app_signout",
+      "components_appshell_canaccess",
+      "components_commandpalette_commandpalette",
+      "components_commandpalette_commandpalette_onkeydown",
+      "components_commandpalette_commandpalette_select",
+      "components_gradesheet_gradesheetdialog",
+      "components_gradesheet_gradesheetdialog_update",
+      "components_paymentdialog_paymentdialog",
+      "components_paymentdialog_paymentdialog_submit",
+      "data_mock_getenrollments",
+      "lib_format_fullname",
+      "lib_format_todayiso",
+      "screens_academics_academics",
+      "screens_studentworkspace_studentworkspace",
+      "screens_studentworkspace_studentworkspace_addsubject",
+      "screens_studentworkspace_studentworkspace_printdocument"
+    ],
+    "3": [
+      "components_appshell",
+      "components_appshell_accessbyrole",
+      "components_appshell_appshell",
+      "components_appshell_appshell_go",
+      "components_appshell_emptyaction",
+      "components_appshell_navgroups",
+      "components_appshell_navitem",
+      "components_appshell_navlabels",
+      "components_appshell_userforrole",
+      "components_ui_avatar",
+      "components_ui_toast",
+      "lib_format_classnames",
+      "screens_login",
+      "screens_login_login",
+      "screens_login_login_demo",
+      "screens_login_login_submit",
+      "types_navkey",
+      "types_role",
+      "types_roles"
+    ],
+    "4": [
+      "components_commandpalette",
+      "components_commandpalette_commandpaletteprops",
+      "components_commandpalette_pageitems",
+      "components_gradesheet",
+      "components_gradesheet_graderow",
+      "data_mock_seed",
+      "screens_academics",
+      "screens_academics_academictab",
+      "types",
+      "types_activity",
+      "types_enrollment",
+      "types_facultymember",
+      "types_feeline",
+      "types_offering",
+      "types_student",
+      "types_studentstatus",
+      "types_toastmessage"
+    ],
+    "5": [
+      "components_paymentdialog_receiptdialog",
+      "lib_format",
+      "lib_format_formatcompactmoney",
+      "lib_format_formatdate",
+      "lib_format_formatdateshort",
+      "lib_format_formatmoney",
+      "lib_format_greeting",
+      "lib_format_initials",
+      "lib_format_peso",
+      "lib_format_shortname",
+      "screens_cashier_cashier",
+      "screens_cashier_cashier_lookupreceipt",
+      "screens_dashboard",
+      "screens_dashboard_dashboard",
+      "screens_dashboard_dashboard_openstudent"
+    ],
+    "6": [
+      "main",
+      "ref_fontsource_variable_inter",
+      "ref_fontsource_variable_newsreader",
+      "ref_react_dom",
+      "styles"
+    ],
+    "7": [
+      "electron_d",
+      "electron_d_window"
+    ]
+  },
+  "cohesion": {
+    "0": 0.16989247311827957,
+    "1": 0.11375661375661375,
+    "2": 0.13405797101449277,
+    "3": 0.1286549707602339,
+    "4": 0.19117647058823528,
+    "5": 0.2761904761904762,
+    "6": 0.4,
+    "7": 1.0
+  },
+  "gods": [
+    {
+      "id": "app_app",
+      "label": "App()",
+      "degree": 29
+    },
+    {
+      "id": "lib_format_fullname",
+      "label": "fullName()",
+      "degree": 25
+    },
+    {
+      "id": "lib_format_formatmoney",
+      "label": "formatMoney()",
+      "degree": 19
+    },
+    {
+      "id": "components_ui_badge",
+      "label": "Badge()",
+      "degree": 18
+    },
+    {
+      "id": "types_student",
+      "label": "Student",
+      "degree": 16
+    },
+    {
+      "id": "components_appshell_pageheader",
+      "label": "PageHeader()",
+      "degree": 15
+    },
+    {
+      "id": "components_ui_emptystate",
+      "label": "EmptyState()",
+      "degree": 13
+    },
+    {
+      "id": "components_ui_modal",
+      "label": "Modal()",
+      "degree": 13
+    },
+    {
+      "id": "screens_cashier_cashier",
+      "label": "Cashier()",
+      "degree": 13
+    },
+    {
+      "id": "screens_studentworkspace_studentworkspace",
+      "label": "StudentWorkspace()",
+      "degree": 11
+    }
+  ],
+  "surprises": [
+    {
+      "source": "NavItem",
+      "target": "NavKey",
+      "source_files": [
+        "components/AppShell.tsx",
+        "types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `NavItem` unexpectedly reaches hub `NavKey`"
+    },
+    {
+      "source": "CommandPaletteProps",
+      "target": "NavKey",
+      "source_files": [
+        "components/CommandPalette.tsx",
+        "types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "Seed",
+      "target": "Student",
+      "source_files": [
+        "data/mock.ts",
+        "types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `Seed` unexpectedly reaches hub `Student`"
+    },
+    {
+      "source": "Academics()",
+      "target": "PageHeader()",
+      "source_files": [
+        "screens/Academics.tsx",
+        "components/AppShell.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "Cashier()",
+      "target": "PageHeader()",
+      "source_files": [
+        "screens/Cashier.tsx",
+        "components/AppShell.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `App()` connect `App` to `ui.tsx`, `App.tsx`, `AppShell.tsx`, `format.ts`, `main.tsx`?",
+      "why": "High betweenness centrality (0.111) - this node is a cross-community bridge."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `App.tsx` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.11375661375661375 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `fullName()` connect `App` to `ui.tsx`, `App.tsx`, `types.ts`, `format.ts`?",
+      "why": "High betweenness centrality (0.067) - this node is a cross-community bridge."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `App` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.13405797101449277 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `StudentWorkspace()` connect `App` to `ui.tsx`, `App.tsx`, `format.ts`?",
+      "why": "High betweenness centrality (0.031) - this node is a cross-community bridge."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `AppShell.tsx` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.1286549707602339 - nodes in this community are weakly interconnected."
+    }
+  ]
+}
