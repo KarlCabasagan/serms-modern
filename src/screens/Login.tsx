@@ -19,15 +19,16 @@ export default function Login({
   const [role, setRole] = useState<Role>('Registrar')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const isDesktop = typeof window !== 'undefined' && Boolean(window.serms)
 
   async function submit(event: FormEvent) {
     event.preventDefault()
-    if (!username.trim() || !password) {
-      setError('Enter your username and password to continue.')
+    if (!isDesktop) {
+      onDemo(role)
       return
     }
-    if (!window.serms) {
-      setError('Live sign-in is available in the desktop app. Use Open demo to review the interface.')
+    if (!username.trim() || !password) {
+      setError('Enter your username and password to continue.')
       return
     }
     setError('')
@@ -109,8 +110,9 @@ export default function Login({
           <div className="login__eyebrow">Welcome back</div>
           <h2 className="login__form-title">Sign in to SERMS</h2>
           <p className="login__form-sub">
-            Use your school account. The demo workspace is available below for reviewing the new
-            interface.
+            {isDesktop
+              ? 'Use your school account to load live records, or open the sample workspace below.'
+              : 'This is the static UI demo. Sign-in is disabled; open the sample workspace to review the interface.'}
           </p>
 
           <div className="login__network">
@@ -190,7 +192,11 @@ export default function Login({
 
             <button className="btn btn--primary btn--lg login__submit" type="submit" disabled={loading}>
               {loading ? <Loader2 size={16} className="spin" /> : null}
-              {loading ? 'Connecting…' : 'Sign in to school records'}
+              {loading
+                ? 'Connecting…'
+                : isDesktop
+                  ? 'Sign in to school records'
+                  : 'Open demo workspace'}
               {!loading && <ArrowRight size={16} />}
             </button>
           </form>

@@ -18,7 +18,7 @@ page.on('console', (message) => {
 
 await page.goto(baseUrl, { waitUntil: 'networkidle' })
 assert.equal(await page.title(), "SERMS Modern · St. Peter's College")
-await page.getByRole('button', { name: 'Open demo' }).click()
+await page.getByRole('button', { name: 'Open demo', exact: true }).click()
 await page.keyboard.press('Control+K')
 await page.locator('.command__input').fill('OR-2026')
 assert.equal(await page.locator('.command__group-label').filter({ hasText: 'Receipts' }).count(), 1)
@@ -90,7 +90,7 @@ const mobile = await browser.newPage({
   hasTouch: true,
 })
 await mobile.goto(baseUrl, { waitUntil: 'networkidle' })
-await mobile.getByRole('button', { name: 'Open demo' }).click()
+await mobile.getByRole('button', { name: 'Open demo', exact: true }).click()
 await mobile.waitForTimeout(250)
 let widths = await mobile.evaluate(() => [document.documentElement.scrollWidth, innerWidth])
 assert.equal(widths[0], widths[1], 'mobile dashboard has horizontal overflow')
