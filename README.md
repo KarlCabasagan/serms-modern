@@ -44,6 +44,10 @@ npm run test:smoke       # Edge + Playwright smoke test
 npm run electron:build   # portable target; use --win dir if the 7z step is blocked
 ```
 
+## Architecture graph
+
+The current Graphify output is in [`graphify-out/`](graphify-out/), with the audit report at [`GRAPH_REPORT.md`](graphify-out/GRAPH_REPORT.md) and the interactive graph at [`graph.html`](graphify-out/graph.html).
+
 ## What is in the prototype
 
 - Login with a school PostgreSQL account for live records, or **Open demo** for synthetic data; responsive app shell.
