@@ -1,0 +1,11 @@
+node_modules/
+dist/
+release/
+*.log
+*.tsbuildinfo
+.env
+.env.*
+config/srgb.ini
+SERMS Modern.lnk
+.DS_Store
+Thumbs.db
