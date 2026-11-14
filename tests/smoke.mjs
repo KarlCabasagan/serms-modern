@@ -84,6 +84,13 @@ await page.getByRole('button', { name: 'Find receipt' }).click()
 assert.equal(await page.locator('.modal__title').innerText(), 'Payment posted')
 await page.getByRole('button', { name: 'Done', exact: true }).click()
 
+await page.getByLabel('Demo role').selectOption('Faculty')
+await page.locator('.nav-item').filter({ hasText: 'My Classes' }).click()
+await page.waitForTimeout(150)
+assert.equal(await page.locator('.page-title').innerText(), 'My Classes')
+assert.equal(await page.locator('.faculty-class').count(), 2)
+assert.equal(await page.locator('.faculty-grid tbody tr').count(), 1)
+
 const mobile = await browser.newPage({
   viewport: { width: 390, height: 844 },
   isMobile: true,
