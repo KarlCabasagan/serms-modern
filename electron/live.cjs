@@ -431,6 +431,55 @@ async function facultyRoster({ code, section }) {
   }))
 }
 
+async function saveFacultyGrade({ studid, subjcode, section, prelim1, prelim2, prelim3, prelim4 }) {
+  if (!client || !activeTerm || !activeFacultyId) {
+    throw new Error('No faculty load is open.')
+  }
+  const assigned = await client.query(
+    `select 1
+     from srgb.semsubject ss
+     where ss.sy = $1 and ss.sem = $2 and ss.facultyid = $3
+       and ss.subjcode = $4 and ss.section = $5
+     limit 1`,
+    [activeTerm.sy, activeTerm.sem, activeFacultyId, subjcode, section],
+  )
+  if (assigned.rowCount === 0) {
+    throw new Error('This class is not assigned to the signed-in faculty account.')
+  }
+
+  const result = await client.query(
+    `update srgb.registration
+     set prelim1 = $1, prelim2 = $2, prelim3 = $3, prelim4 = $4
+     where sy = $5 and sem = $6 and studid = $7 and subjcode = $8
+       and trim(section) = trim($9)
+     returning prelim1, prelim2, prelim3, prelim4, grade, remarks`,
+    [
+      prelim1 || null,
+      prelim2 || null,
+      prelim3 || null,
+      prelim4 || null,
+      activeTerm.sy,
+      activeTerm.sem,
+      studid,
+      subjcode,
+      section,
+    ],
+  )
+  if (result.rowCount !== 1) {
+    throw new Error('The student grade row no longer matches this class. Nothing was saved.')
+  }
+  const row = result.rows[0]
+  return {
+    id: trim(studid),
+    prelim: trim(row.prelim1) || undefined,
+    midterm: trim(row.prelim2) || undefined,
+    prefinal: trim(row.prelim3) || undefined,
+    final: trim(row.prelim4) || undefined,
+    grade: trim(row.grade) || undefined,
+    remark: trim(row.remarks) || undefined,
+  }
+}
+
 async function assessmentLinesFor(studid) {
   if (!client || !activeTerm) throw new Error('No live connection is open.')
   const rows = (
@@ -488,4 +537,4 @@ async function saveGrades({ sy, sem, rows }) {
   }
 }
 
-module.exports = { connect, disconnect, bootstrap, saveGrades, assessmentLinesFor, facultyRoster }
+module.exports = { connect, disconnect, bootstrap, saveGrades, assessmentLinesFor, facultyRoster, saveFacultyGrade }

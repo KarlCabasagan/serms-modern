@@ -156,6 +156,14 @@ ipcMain.handle('live:refresh', async () => {
   }
 })
 
+ipcMain.handle('live:facultyGrade', async (_event, payload) => {
+  try {
+    return { ok: true, student: await live.saveFacultyGrade(payload) }
+  } catch (error) {
+    return { ok: false, message: error?.message || 'The grade could not be saved.' }
+  }
+})
+
 ipcMain.handle('live:facultyRoster', async (_event, payload) => {
   try {
     return { ok: true, students: await live.facultyRoster(payload) }

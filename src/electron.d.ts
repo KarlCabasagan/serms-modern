@@ -47,6 +47,18 @@ declare global {
           credentials: { username: string; password: string },
         ) => Promise<({ ok: true; message?: undefined } & LiveBootstrap) | { ok: false; message: string }>
         refresh: () => Promise<({ ok: true; message?: undefined } & LiveBootstrap) | { ok: false; message: string }>
+        facultyGrade: (payload: {
+          studid: string
+          subjcode: string
+          section: string
+          prelim1: string
+          prelim2: string
+          prelim3: string
+          prelim4: string
+        }) => Promise<
+          | { ok: true; student: FacultyStudent }
+          | { ok: false; message: string }
+        >
         facultyRoster: (payload: { code: string; section: string }) => Promise<
           | { ok: true; students: FacultyStudent[] }
           | { ok: false; message: string }
