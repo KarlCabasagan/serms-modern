@@ -79,6 +79,24 @@ This is why the feature only works on the school network: it is a direct databas
 - Detects `server_encoding` before reading rows. If the school database is `SQL_ASCII`, `LATIN1`, or `WIN1252`, it switches the session to the matching single-byte client encoding and decodes text accordingly. This fixes `invalid byte sequence for encoding "UTF8": 0xd1 0x41` on names such as `ÑA`.
 - Never stores the password in the renderer or on disk.
 
+## Faculty classes
+
+- Maps the PostgreSQL login role through `srgb.faculty_username.username` to `pis.employee.empid`.
+- Reads the faculty member's assigned sections from `srgb.semsubject` for the active `sy`/`sem`.
+- Reads a section roster from `srgb.registration` joined to `srgb.student`, with program/year from `srgb.semstudent`.
+- Rosters are loaded per selected section (`live:facultyRoster`); they are not part of the login bootstrap.
+- The Faculty role gets **My Classes** in live mode. The page shows subject, section, schedule, room, enrolled count, and the student roster, with search and CSV export.
+
+## Login performance
+
+The school term has 3,876 students, 24,620 registration rows, 84,758 assessment-detail rows, and 3 faculty classes. The bootstrap was reduced to:
+
+- one bulk student query with SQL-side balance, assessment, and GPA aggregation;
+- one enrollment query with the faculty-name join removed;
+- no bulk assessment fee lines and no class rosters.
+
+Assessment fee lines load when a student is opened (`live:assessment`), and rosters load when a class is selected. The student directory renders 50 rows per page. Locally measured against the school server: login-to-dashboard about 6 seconds, Students page about 250 ms after load.
+
 `src/screens/Administration.tsx` — **Test connection** and **Open live records** dialog.
 
 ## Next mapping (must be validated on a test copy)
