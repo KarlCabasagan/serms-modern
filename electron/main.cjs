@@ -14,6 +14,8 @@ function readIni() {
     path.join(process.resourcesPath || '', 'srgb.ini'),
     path.join(__dirname, '..', '..', 'srgb.ini'),
     path.join(process.cwd(), 'srgb.ini'),
+    path.join(process.cwd(), 'config', 'srgb.ini'),
+    path.join(process.cwd(), 'release', 'win-unpacked', 'resources', 'srgb.ini'),
   ].filter(Boolean)
 
   for (const candidate of candidates) {
@@ -136,7 +138,7 @@ ipcMain.handle('live:connect', async (_event, credentials) => {
     return {
       ok: false,
       message: networkIssue
-        ? 'The school server is not reachable. Check the school Wi-Fi and try again.'
+        ? `The school server is not reachable at ${config.host}:${config.port}. Check the school Wi-Fi and try again.`
         : authIssue
           ? 'The school server rejected that username or password.'
           : encodingIssue
@@ -230,7 +232,7 @@ ipcMain.handle('db:test', async (_event, credentials) => {
     return {
       ok: false,
       message: networkIssue
-        ? 'The school server is not reachable. Check the school Wi-Fi and try again.'
+        ? `The school server is not reachable at ${config.host}:${config.port}. Check the school Wi-Fi and try again.`
         : 'The server could not complete the sign-in. Check the username, password, and database.',
       code: error?.code,
     }

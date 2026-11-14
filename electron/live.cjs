@@ -91,8 +91,6 @@ function createClient(config, credentials) {
     user: credentials.username,
     password: credentials.password,
     connectionTimeoutMillis: 7000,
-    statement_timeout: 15000,
-    options: '-c search_path=srgb,public,pis,ngas,fis,payroll',
   })
 }
 
@@ -104,6 +102,10 @@ async function connect(config, credentials) {
   const next = createClient(config, credentials)
   try {
     await next.connect()
+    // Keep the startup packet to the standard user/database fields and set the
+    // schema after connecting; this avoids differences in how server builds
+    // treat startup-time options.
+    await next.query('set search_path to srgb,public,pis,ngas,fis,payroll')
     await configureClientEncoding(next)
     client = next
     return await bootstrap()

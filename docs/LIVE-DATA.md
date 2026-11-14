@@ -2,6 +2,8 @@
 
 Status: **connection test, live student data, live assessment fee lines, and confirmation-gated grade writes implemented. Payment and assessment writes are still read-only.**
 
+Verified on the school server: PostgreSQL 11.1, `SQL_ASCII`, live login and student read succeed through the packaged app.
+
 ## What the original does
 
 - Reads `srgb.ini` next to the executable / working folder:

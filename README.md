@@ -24,7 +24,7 @@ npx electron-builder --win dir --x64
 .\SERMS Modern.cmd
 ```
 
-The launcher uses the installed Electron runtime to load the bundled `release/win-unpacked/resources/app.asar`. The generated unsigned `.exe` may be blocked by Windows Application Control; the launcher is the reliable local path. `SERMS Modern.lnk` is a machine-local shortcut and is intentionally not committed.
+The launcher uses the installed Electron runtime to load the bundled `release/win-unpacked/resources/app.asar` and points at that folder's `srgb.ini`. The generated unsigned `.exe` may be blocked by Windows Application Control; the launcher is the reliable local path. `SERMS Modern.lnk` is a machine-local shortcut and is intentionally not committed.
 
 ### Browser development
 

@@ -15,4 +15,9 @@ if not exist "%ASAR%" (
 )
 set "ELECTRON_RUN_AS_NODE="
 set "SERMS_DEV=0"
+if exist "%ROOT%release\win-unpacked\resources\srgb.ini" (
+  set "SERMS_INI=%ROOT%release\win-unpacked\resources\srgb.ini"
+) else if exist "%ROOT%config\srgb.ini" (
+  set "SERMS_INI=%ROOT%config\srgb.ini"
+)
 start "" "%ELECTRON%" "%ASAR%"
