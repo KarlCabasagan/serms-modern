@@ -1,17 +1,17 @@
 # Graph Report - SERMS-Modern  (2026-11-14)
 
 ## Corpus Check
-- 43 files · ~30,828 words
+- 43 files · ~31,806 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: (none) 1, .cmd 1, .ini 1)
 
 ## Summary
-- 395 nodes · 902 edges · 18 communities (17 shown, 1 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 17 edges (avg confidence: 0.86)
+- 406 nodes · 926 edges · 18 communities (17 shown, 1 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 18 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `dfd4959c`
+- Built from commit: `157fac76`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -35,7 +35,7 @@
 - Playwright Smoke Tests
 
 ## God Nodes (most connected - your core abstractions)
-1. `App()` - 37 edges
+1. `App()` - 39 edges
 2. `fullName()` - 33 edges
 3. `lucide-react` - 22 edges
 4. `react` - 22 edges
@@ -55,8 +55,8 @@
   README.md → docs/LIVE-DATA.md
 - `Write Mapping: Grade, Payment, Assessment, COR` --rationale_for--> `Product Principles`  [INFERRED]
   docs/LIVE-DATA.md → PRODUCT.md
-- `Seed` --references--> `Student`  [EXTRACTED]
-  src/data/mock.ts → src/types.ts
+- `chooseSubject()` --calls--> `fullName()`  [EXTRACTED]
+  src/components/LiveClassGradeDialog.tsx → src/lib/format.ts
 
 ## Import Cycles
 - None detected.
@@ -69,20 +69,20 @@
 ## Communities (18 total, 1 thin omitted)
 
 ### Community 0 - "Student Workspace & Documents"
-Cohesion: 0.12
-Nodes (23): CommandPaletteProps, DocumentKind, DocumentPreview(), titles, LiveClassGradeDialog(), Row, LiveGradeDialog(), Row (+15 more)
+Cohesion: 0.11
+Nodes (24): lucide-react, DocumentKind, DocumentPreview(), titles, GradeRow, LiveClassGradeDialog(), chooseSubject(), Row (+16 more)
 
 ### Community 1 - "Cashier & Dashboard UI"
 Cohesion: 0.11
-Nodes (33): App(), addStudent(), applyLive(), changeRole(), exitLive(), liveLogin(), loadAssessmentFor(), loadLive() (+25 more)
+Nodes (34): App(), addStudent(), applyLive(), changeRole(), exitLive(), liveLogin(), loadAssessmentFor(), loadLive() (+26 more)
 
 ### Community 2 - "Pages Deploy Workflow"
 Cohesion: 0.07
 Nodes (31): runs-on, steps, concurrency, cancel-in-progress, group, environment, needs, runs-on (+23 more)
 
 ### Community 3 - "Screens & UI Primitives"
-Cohesion: 0.11
-Nodes (30): lucide-react, react, accessByRole, AppShell(), navGroups, NavItem, navLabels, PageHeader() (+22 more)
+Cohesion: 0.09
+Nodes (35): react, accessByRole, AppShell(), navGroups, NavItem, navLabels, PageHeader(), userForRole (+27 more)
 
 ### Community 4 - "Live Data Architecture"
 Cohesion: 0.12
@@ -94,11 +94,11 @@ Nodes (34): activities, cashiers, catalog, computeAssessment(), currentTerm, dem
 
 ### Community 6 - "Electron PostgreSQL Bridge"
 Cohesion: 0.10
-Nodes (23): assessmentLinesFor(), bootstrap(), { BufferReader }, { Client }, configureClientEncoding(), connect(), createClient(), decodeText() (+15 more)
+Nodes (24): assessmentLinesFor(), bootstrap(), { BufferReader }, { Client }, configureClientEncoding(), connect(), createClient(), decodeText() (+16 more)
 
 ### Community 7 - "0.2.0"
-Cohesion: 0.33
-Nodes (5): 0.2.0, Added, Changed, Changelog, Fixed
+Cohesion: 0.29
+Nodes (6): 0.2.0, Added, Added (faculty grade grid), Changed, Changelog, Fixed
 
 ### Community 8 - "TypeScript Configuration"
 Cohesion: 0.11
@@ -138,23 +138,23 @@ Nodes (5): playwright-core@^1.65.0, playwright-core, errors, rosterSearch, scree
 
 ## Knowledge Gaps
 - **2 isolated node(s):** `St. Peter's College`, `Static GitHub Pages Demo`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 156 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 161 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `react` connect `Screens & UI Primitives` to `Student Workspace & Documents`, `Cashier & Dashboard UI`, `App State & Mock Data`, `React Entry & Theme`, `Package Manifest`?**
-  _High betweenness centrality (0.130) - this node is a cross-community bridge._
+  _High betweenness centrality (0.132) - this node is a cross-community bridge._
 - **What connects `St. Peter's College`, `Static GitHub Pages Demo` to the rest of the system?**
   _2 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Student Workspace & Documents` be split into smaller, more focused modules?**
-  _Cohesion score 0.1166429587482219 - nodes in this community are weakly interconnected._
-- **Why does `lucide-react` connect `Screens & UI Primitives` to `Student Workspace & Documents`, `Cashier & Dashboard UI`, `App State & Mock Data`, `React Entry & Theme`, `Package Manifest`?**
+  _Cohesion score 0.11153846153846154 - nodes in this community are weakly interconnected._
+- **Why does `lucide-react` connect `Student Workspace & Documents` to `Cashier & Dashboard UI`, `Screens & UI Primitives`, `App State & Mock Data`, `React Entry & Theme`, `Package Manifest`?**
   _High betweenness centrality (0.102) - this node is a cross-community bridge._
 - **Should `Cashier & Dashboard UI` be split into smaller, more focused modules?**
-  _Cohesion score 0.11313131313131314 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11304347826086956 - nodes in this community are weakly interconnected._
 - **Why does `App()` connect `Cashier & Dashboard UI` to `Student Workspace & Documents`, `React Entry & Theme`, `Screens & UI Primitives`, `App State & Mock Data`?**
-  _High betweenness centrality (0.053) - this node is a cross-community bridge._
+  _High betweenness centrality (0.054) - this node is a cross-community bridge._
 - **Should `Pages Deploy Workflow` be split into smaller, more focused modules?**
   _Cohesion score 0.06653225806451613 - nodes in this community are weakly interconnected._
