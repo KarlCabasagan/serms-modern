@@ -90,6 +90,11 @@ await page.waitForTimeout(150)
 assert.equal(await page.locator('.page-title').innerText(), 'My Classes')
 assert.equal(await page.locator('.faculty-class').count(), 2)
 assert.equal(await page.locator('.faculty-grid tbody tr').count(), 1)
+const [rosterDownload] = await Promise.all([
+  page.waitForEvent('download'),
+  page.getByRole('button', { name: 'Export', exact: true }).click(),
+])
+assert.equal(rosterDownload.suggestedFilename(), 'CS-201-A-roster.csv')
 
 const mobile = await browser.newPage({
   viewport: { width: 390, height: 844 },
