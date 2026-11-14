@@ -2,6 +2,7 @@ import type {
   Activity,
   Enrollment,
   FacultyMember,
+  FacultyProfile,
   Offering,
   Payment,
   ReportDef,
@@ -287,6 +288,43 @@ export const offerings: Offering[] = [
   { code: 'CRIM 201', title: 'Criminal Law & Procedure', section: 'A', schedule: 'TTh · 10:20–11:40 AM', room: 'Room 310', instructor: 'Atty. P. Gomez', capacity: 40, enrolled: 34, program: 'BSCRIM', units: 3 },
   { code: 'GE 101', title: 'Understanding the Self', section: 'C', schedule: 'MWF · 1:00–2:00 PM', room: 'Room 105', instructor: 'Prof. I. Suarez', capacity: 50, enrolled: 48, program: 'All programs', units: 3 },
 ]
+
+export const demoFacultyProfile: FacultyProfile = {
+  id: 'EMP-1042',
+  name: 'Prof. Justino Abellanosa',
+  department: 'Computer Studies',
+  classes: offerings
+    .filter((offering) => offering.instructor === 'Prof. J. Abellanosa')
+    .map((offering) => ({
+      code: offering.code,
+      title: offering.title,
+      section: offering.section,
+      units: offering.units,
+      schedule: offering.schedule,
+      room: offering.room,
+      capacity: offering.capacity,
+      enrolled: offering.enrolled,
+      students: enrollments
+        .filter((entry) => entry.code === offering.code && entry.section === offering.section)
+        .map((entry) => {
+          const student = students.find((item) => item.id === entry.studentId)
+          if (!student) return null
+          return {
+            id: student.id,
+            name: fullName(student),
+            program: student.programName,
+            year: student.year,
+            prelim: entry.prelim,
+            midterm: entry.midterm,
+            prefinal: entry.prefinal,
+            final: entry.final,
+            grade: entry.grade,
+            remark: entry.remark,
+          }
+        })
+        .filter((student): student is NonNullable<typeof student> => Boolean(student)),
+    })),
+}
 
 export const faculty: FacultyMember[] = [
   { id: 'EMP-1042', name: 'Prof. Justino Abellanosa', department: 'Computer Studies', load: 21, subjects: 4, status: 'Complete' },

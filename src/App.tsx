@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   activities as demoActivities,
   currentTerm,
+  demoFacultyProfile,
   enrollments as demoEnrollments,
   faculty,
   offerings,
@@ -388,7 +389,7 @@ export default function App() {
 
         {nav === 'classes' && (
           <FacultyClasses
-            faculty={facultyProfile}
+            faculty={facultyProfile ?? (!liveMode && role === 'Faculty' ? demoFacultyProfile : null)}
             live={liveMode}
             term={term}
             onOpenStudent={openStudent}
