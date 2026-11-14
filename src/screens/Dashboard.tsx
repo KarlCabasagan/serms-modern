@@ -2,6 +2,7 @@ import {
   AlertCircle,
   ArrowRight,
   Banknote,
+  BookOpenCheck,
   CalendarDays,
   CheckCircle2,
   ClipboardCheck,
@@ -91,6 +92,12 @@ export default function Dashboard({
               <Search size={14} />
               Find a student
             </button>
+            {role === 'Faculty' && (
+              <button className="btn btn--primary" onClick={() => onNavigate('classes')}>
+                <BookOpenCheck size={14} />
+                My classes
+              </button>
+            )}
             {!live &&
               ((role === 'Registrar' || role === 'Administrator') ? (
                 <button className="btn btn--primary" onClick={() => onNavigate('registration')}>
