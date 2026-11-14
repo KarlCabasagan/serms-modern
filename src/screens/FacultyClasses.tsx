@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { BookOpenCheck, CalendarDays, ChevronRight, Loader2, MapPin, Search, UsersRound } from 'lucide-react'
+import { BookOpenCheck, CalendarDays, ChevronRight, Download, Loader2, MapPin, Search, UsersRound } from 'lucide-react'
 import type { FacultyProfile, FacultyStudent, Term } from '../types'
 import { Avatar, Badge, EmptyState, InfoStrip } from '../components/ui'
 import { PageHeader } from '../components/AppShell'
@@ -66,6 +66,38 @@ export default function FacultyClasses({
 
   const roster =
     (selected && rosters[`${selected.code}|${selected.section}`]) ?? selected?.students ?? []
+
+  function exportRoster() {
+    if (!selected || roster.length === 0) return
+    const escape = (value: string | number) => `"${String(value).replace(/"/g, '""')}"`
+    const header = ['Student ID', 'Name', 'Program', 'Year', 'Prelim', 'Midterm', 'Pre-final', 'Final', 'Grade', 'Remarks']
+    const lines = roster.map((student) =>
+      [
+        student.id,
+        student.name,
+        student.program,
+        student.year,
+        student.prelim ?? '',
+        student.midterm ?? '',
+        student.prefinal ?? '',
+        student.final ?? '',
+        student.grade ?? '',
+        student.remark ?? '',
+      ]
+        .map(escape)
+        .join(','),
+    )
+    const blob = new Blob([[header.map(escape).join(','), ...lines].join('\r\n')], {
+      type: 'text/csv;charset=utf-8;',
+    })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${selected.code.replace(/\s+/g, '-')}-${selected.section.trim() || 'class'}-roster.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+    onToast('Class roster exported', `${roster.length} students written to CSV.`)
+  }
   const q = rosterQuery.trim().toLowerCase()
   const visibleRoster = q
     ? roster.filter((student) =>
@@ -192,6 +224,14 @@ export default function FacultyClasses({
                   {selected.schedule && <span><CalendarDays size={13} /> {selected.schedule}</span>}
                   {selected.room && <span><MapPin size={13} /> {selected.room}</span>}
                 </div>
+                <button
+                  className="btn btn--secondary btn--sm"
+                  onClick={exportRoster}
+                  disabled={roster.length === 0}
+                >
+                  <Download size={13} />
+                  Export
+                </button>
               </div>
               {roster.length > 0 && (
                 <div className="faculty-roster-toolbar">
