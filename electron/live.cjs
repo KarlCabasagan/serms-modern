@@ -230,19 +230,33 @@ async function bootstrap() {
     }
   })
 
+  const facultyRows = (
+    await client.query(
+      `select e.empid, e.lastname, e.firstname
+       from pis.employee e
+       where e.empid in (
+         select distinct ss.facultyid from srgb.semsubject ss where ss.sy = $1 and ss.sem = $2
+       )`,
+      [sy, sem],
+    )
+  ).rows
+  const instructors = new Map(
+    facultyRows.map((row) => [
+      trim(row.empid),
+      [trim(row.lastname), trim(row.firstname)].filter(Boolean).join(', '),
+    ]),
+  )
+
   const enrollmentRows = (
     await client.query(
       `select r.studid, r.subjcode, subj.subjdesc, coalesce(subj.subjcredit, 0) as units,
-              r.section, ss.days, ss.time, ss.room,
-              coalesce(nullif(trim(e.lastname), '') || ', ' || coalesce(e.firstname, ''), '') as instructor,
+              r.section, ss.days, ss.time, ss.room, ss.facultyid,
               r.prelim1, r.prelim2, r.prelim3, r.prelim4, r.grade, r.remarks
        from srgb.registration r
        join srgb.subject subj on subj.subjcode = r.subjcode
        left join srgb.semsubject ss
          on ss.sy = r.sy and ss.sem = r.sem and ss.subjcode = r.subjcode and ss.section = r.section
-       left join pis.employee e on e.empid = ss.facultyid
-       where r.sy = $1 and r.sem = $2
-       order by r.studid, r.subjcode`,
+       where r.sy = $1 and r.sem = $2`,
       [sy, sem],
     )
   ).rows
@@ -255,7 +269,7 @@ async function bootstrap() {
     section: trim(row.section),
     schedule: [trim(row.days), trim(row.time)].filter(Boolean).join(' · '),
     room: trim(row.room),
-    instructor: trim(row.instructor),
+    instructor: instructors.get(trim(row.facultyid)) || '',
     status: 'Enrolled',
     prelim: trim(row.prelim1) || undefined,
     midterm: trim(row.prelim2) || undefined,
