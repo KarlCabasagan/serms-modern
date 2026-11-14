@@ -12,6 +12,7 @@ import {
   Download,
   FileText,
   GraduationCap,
+  Loader2,
   Mail,
   MapPin,
   Phone,
@@ -54,6 +55,7 @@ export default function StudentWorkspace({
   readOnly = false,
   canWriteGrades = true,
   assessmentLines,
+  assessmentLoading = false,
   classStudents,
   classEnrollments,
   onBack,
@@ -69,6 +71,7 @@ export default function StudentWorkspace({
   readOnly?: boolean
   canWriteGrades?: boolean
   assessmentLines?: Array<{ code: string; label: string; amount: number }>
+  assessmentLoading?: boolean
   classStudents?: Student[]
   classEnrollments?: Enrollment[]
   onBack: () => void
@@ -131,6 +134,10 @@ export default function StudentWorkspace({
   }
 
   function printDocument(kind: DocumentKind) {
+    if (readOnly && kind === 'assessment' && assessmentLoading) {
+      onToast('Loading assessment', 'The live fee lines are still being read from the school database.')
+      return
+    }
     if (readOnly && kind === 'assessment' && !liveFeeLines) {
       onToast(
         'No live fee lines to print',
@@ -567,7 +574,13 @@ export default function StudentWorkspace({
                 </button>
               </div>
               <div className="card__body">
-                {readOnly && !liveFeeLines && (
+                {assessmentLoading && (
+                  <div className="info-strip" style={{ marginBottom: 0 }}>
+                    <Loader2 size={14} className="spin" />
+                    <div>Loading live fee lines from the school database…</div>
+                  </div>
+                )}
+                {!assessmentLoading && readOnly && !liveFeeLines && (
                   <div className="info-strip" style={{ marginBottom: 0 }}>
                     <ShieldCheck size={14} />
                     <div>
@@ -577,7 +590,7 @@ export default function StudentWorkspace({
                     </div>
                   </div>
                 )}
-                {(!readOnly || liveFeeLines) && (
+                {!assessmentLoading && (!readOnly || liveFeeLines) && (
                   <>
                     <div className="fee-list">
                       {displayedFees.map((fee) => (

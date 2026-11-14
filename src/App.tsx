@@ -45,6 +45,7 @@ export default function App() {
   const [liveAssessmentLines, setLiveAssessmentLines] = useState<
     Record<string, Array<{ code: string; label: string; amount: number }>>
   >({})
+  const [assessmentLoading, setAssessmentLoading] = useState<Record<string, boolean>>({})
   const [paymentStudent, setPaymentStudent] = useState<Student | null>(null)
   const [receipt, setReceipt] = useState<{ payment: Payment; student: Student } | null>(null)
   const [toast, setToast] = useState<ToastMessage | null>(null)
@@ -70,9 +71,10 @@ export default function App() {
     setPayments(result.payments)
     setTerm(result.term)
     setLiveStats(result.stats)
-    setLiveAssessmentLines(result.assessmentLines ?? {})
+    setLiveAssessmentLines({})
+    setAssessmentLoading({})
     setLiveMode(true)
-    setNav('students')
+    setNav('dashboard')
     setSelectedStudentId(null)
     notify(
       'Live records loaded',
@@ -125,6 +127,7 @@ export default function App() {
     setTerm(currentTerm)
     setLiveStats(null)
     setLiveAssessmentLines({})
+    setAssessmentLoading({})
     setLiveMode(false)
     setRole(nextRole)
     setNav('dashboard')
@@ -152,7 +155,6 @@ export default function App() {
       setPayments(refreshed.payments)
       setTerm(refreshed.term)
       setLiveStats(refreshed.stats)
-      setLiveAssessmentLines(refreshed.assessmentLines ?? {})
     }
     notify(
       'Grades saved to the school database',
@@ -170,8 +172,9 @@ export default function App() {
     setTerm(currentTerm)
     setLiveStats(null)
     setLiveAssessmentLines({})
+    setAssessmentLoading({})
     setLiveMode(false)
-    setNav('students')
+    setNav('dashboard')
     setSelectedStudentId(null)
     setPaymentStudent(null)
     setReceipt(null)
@@ -191,9 +194,22 @@ export default function App() {
     setSelectedStudentId(null)
   }
 
+  async function loadAssessmentFor(id: string) {
+    if (!liveMode || !window.serms || liveAssessmentLines[id]) return
+    setAssessmentLoading((current) => ({ ...current, [id]: true }))
+    const result = await window.serms.live.assessment(id)
+    if (result.ok) {
+      setLiveAssessmentLines((current) => ({ ...current, [id]: result.lines }))
+    } else {
+      notify('Assessment not loaded', result.message, 'warning')
+    }
+    setAssessmentLoading((current) => ({ ...current, [id]: false }))
+  }
+
   function openStudent(id: string) {
     setSelectedStudentId(id)
     setNav('students')
+    void loadAssessmentFor(id)
   }
 
   function openPayment(student: Student) {
@@ -265,6 +281,8 @@ export default function App() {
     setPayments(demoPayments)
     setLiveMode(false)
     setLiveStats(null)
+    setLiveAssessmentLines({})
+    setAssessmentLoading({})
     setSelectedStudentId(null)
     setCommandOpen(false)
     setPaymentStudent(null)
@@ -340,6 +358,7 @@ export default function App() {
                 !liveMode || role === 'Registrar' || role === 'Administrator' || role === 'Faculty'
               }
               assessmentLines={liveMode ? liveAssessmentLines[selectedStudent.id] : undefined}
+              assessmentLoading={liveMode ? Boolean(assessmentLoading[selectedStudent.id]) : false}
               classStudents={liveMode ? students : undefined}
               classEnrollments={liveMode ? enrollments : undefined}
               onBack={() => setSelectedStudentId(null)}

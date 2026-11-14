@@ -156,6 +156,14 @@ ipcMain.handle('live:refresh', async () => {
   }
 })
 
+ipcMain.handle('live:assessment', async (_event, studid) => {
+  try {
+    return { ok: true, lines: await live.assessmentLinesFor(studid) }
+  } catch (error) {
+    return { ok: false, message: error?.message || 'The assessment fee lines could not be loaded.' }
+  }
+})
+
 ipcMain.handle('live:saveGrades', async (_event, payload) => {
   try {
     const result = await live.saveGrades(payload)

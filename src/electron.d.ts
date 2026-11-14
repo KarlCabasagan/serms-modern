@@ -46,6 +46,10 @@ declare global {
           credentials: { username: string; password: string },
         ) => Promise<({ ok: true; message?: undefined } & LiveBootstrap) | { ok: false; message: string }>
         refresh: () => Promise<({ ok: true; message?: undefined } & LiveBootstrap) | { ok: false; message: string }>
+        assessment: (studid: string) => Promise<
+          | { ok: true; lines: Array<{ code: string; label: string; amount: number }> }
+          | { ok: false; message: string }
+        >
         saveGrades: (payload: {
           sy: string
           sem: string

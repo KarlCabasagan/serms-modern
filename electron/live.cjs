@@ -2,6 +2,7 @@ const { Client } = require('pg')
 const { BufferReader } = require('pg-protocol/dist/buffer-reader')
 
 let client = null
+let activeTerm = null
 let utf8Mode = true
 let decodeText = (buffer) => buffer.toString('utf8')
 const decodeUtf8String = BufferReader.prototype.string
@@ -121,6 +122,7 @@ async function disconnect() {
     await client.end().catch(() => {})
     client = null
   }
+  activeTerm = null
   useUtf8()
 }
 
@@ -141,6 +143,7 @@ async function bootstrap() {
 
   const sy = trim(termRow.sy)
   const sem = trim(termRow.sem)
+  activeTerm = { sy, sem }
   const term = {
     ay: sy,
     semester: semesterLabel(sem),
@@ -313,37 +316,12 @@ async function bootstrap() {
     status: 'Posted',
   }))
 
-  const assessmentLines = {}
-  try {
-    const assessmentRows = (
-      await client.query(
-        `select ad.studid, ad.feecode, f.feedesc, ad.amt
-         from srgb.ass_details ad
-         join srgb.fees f on f.feecode = ad.feecode
-         where ad.sy = $1 and ad.sem = $2
-         order by ad.studid, f.ord nulls last, ad.feecode`,
-        [sy, sem],
-      )
-    ).rows
-    for (const row of assessmentRows) {
-      const studentId = trim(row.studid)
-      if (!assessmentLines[studentId]) assessmentLines[studentId] = []
-      assessmentLines[studentId].push({
-        code: trim(row.feecode),
-        label: trim(row.feedesc) || trim(row.feecode),
-        amount: num(row.amt),
-      })
-    }
-  } catch {
-    // Older deployments may not have ass_details populated; the total still works.
-  }
-
   return {
     term,
     students,
     enrollments,
     payments,
-    assessmentLines,
+    assessmentLines: {},
     stats: {
       students: students.length,
       enrolled: students.filter((student) => student.status === 'Enrolled').length,
@@ -353,6 +331,25 @@ async function bootstrap() {
     },
     readOnly: true,
   }
+}
+
+async function assessmentLinesFor(studid) {
+  if (!client || !activeTerm) throw new Error('No live connection is open.')
+  const rows = (
+    await client.query(
+      `select ad.feecode, f.feedesc, ad.amt
+       from srgb.ass_details ad
+       join srgb.fees f on f.feecode = ad.feecode
+       where ad.sy = $1 and ad.sem = $2 and ad.studid = $3
+       order by f.ord nulls last, ad.feecode`,
+      [activeTerm.sy, activeTerm.sem, studid],
+    )
+  ).rows
+  return rows.map((row) => ({
+    code: trim(row.feecode),
+    label: trim(row.feedesc) || trim(row.feecode),
+    amount: num(row.amt),
+  }))
 }
 
 async function saveGrades({ sy, sem, rows }) {
@@ -393,4 +390,4 @@ async function saveGrades({ sy, sem, rows }) {
   }
 }
 
-module.exports = { connect, disconnect, bootstrap, saveGrades }
+module.exports = { connect, disconnect, bootstrap, saveGrades, assessmentLinesFor }
