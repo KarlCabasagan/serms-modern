@@ -1211,6 +1211,82 @@ svg {
   background: #fdfaf5;
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
+.faculty-grid {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.faculty-class-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 10px;
+}
+.faculty-class {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fffdfa;
+  text-align: left;
+  transition: border-color var(--ease-out), background var(--ease-out), transform var(--ease-out);
+}
+.faculty-class:hover {
+  border-color: #d8c7b8;
+  background: #fff;
+}
+.faculty-class:active {
+  transform: translateY(1px);
+}
+.faculty-class--active {
+  border-color: var(--maroon-700);
+  background: #fdf6ee;
+  box-shadow: inset 3px 0 0 var(--maroon-700);
+}
+.faculty-class__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--maroon-800);
+}
+.faculty-class__code {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.faculty-class__title {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink);
+  line-height: 1.35;
+}
+.faculty-class__meta {
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.faculty-class__facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  max-width: 45%;
+  color: var(--muted);
+  font-size: 10px;
+}
+.faculty-class__facts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
 .pagination {
   display: flex;
   align-items: center;
@@ -3567,7 +3643,8 @@ svg {
     padding: 24px 20px 44px;
   }
   .detail-grid,
-  .detail-grid--even {
+  .detail-grid--even,
+  .faculty-grid {
     grid-template-columns: 1fr;
   }
   .dashboard-grid {
@@ -3602,6 +3679,11 @@ svg {
 }
 
 @media (max-width: 720px) {
+  .faculty-class__facts {
+    justify-content: flex-start;
+    max-width: 100%;
+    margin-top: 4px;
+  }
   .topbar {
     gap: 8px;
     height: 60px;

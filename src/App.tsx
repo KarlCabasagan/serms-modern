@@ -8,7 +8,7 @@ import {
   payments as demoPayments,
   students as demoStudents,
 } from './data/mock'
-import type { Enrollment, NavKey, Payment, Role, Student, Term, ToastMessage } from './types'
+import type { Enrollment, FacultyProfile, NavKey, Payment, Role, Student, Term, ToastMessage } from './types'
 import { canAccess, AppShell } from './components/AppShell'
 import CommandPalette from './components/CommandPalette'
 import { PaymentDialog, ReceiptDialog } from './components/PaymentDialog'
@@ -20,6 +20,7 @@ import StudentWorkspace from './screens/StudentWorkspace'
 import Registration from './screens/Registration'
 import Cashier from './screens/Cashier'
 import Academics from './screens/Academics'
+import FacultyClasses from './screens/FacultyClasses'
 import Reports from './screens/Reports'
 import Administration from './screens/Administration'
 import { formatMoney, fullName, todayIso } from './lib/format'
@@ -35,6 +36,7 @@ export default function App() {
   const [enrollments, setEnrollments] = useState<Enrollment[]>(demoEnrollments)
   const [payments, setPayments] = useState<Payment[]>(demoPayments)
   const [liveMode, setLiveMode] = useState(false)
+  const [facultyProfile, setFacultyProfile] = useState<FacultyProfile | null>(null)
   const [liveStats, setLiveStats] = useState<{
     students: number
     enrolled: number
@@ -69,6 +71,7 @@ export default function App() {
     setStudents(result.students)
     setEnrollments(result.enrollments)
     setPayments(result.payments)
+    setFacultyProfile(result.faculty ?? null)
     setTerm(result.term)
     setLiveStats(result.stats)
     setLiveAssessmentLines({})
@@ -111,7 +114,7 @@ export default function App() {
       const result = await window.serms.live.connect(credentials)
       if (!result.ok) return { ok: false, message: result.message }
       applyLive(result)
-      setRole(nextRole)
+      setRole(result.faculty && nextRole === 'Registrar' ? 'Faculty' : nextRole)
       setLoggedIn(true)
       return { ok: true }
     } catch {
@@ -124,6 +127,7 @@ export default function App() {
     setStudents(demoStudents)
     setEnrollments(demoEnrollments)
     setPayments(demoPayments)
+    setFacultyProfile(null)
     setTerm(currentTerm)
     setLiveStats(null)
     setLiveAssessmentLines({})
@@ -169,6 +173,7 @@ export default function App() {
     setStudents(demoStudents)
     setEnrollments(demoEnrollments)
     setPayments(demoPayments)
+    setFacultyProfile(null)
     setTerm(currentTerm)
     setLiveStats(null)
     setLiveAssessmentLines({})
@@ -186,8 +191,8 @@ export default function App() {
       notify('Not available for this role', `Switch to a role with access to ${key}.`, 'warning')
       return
     }
-    if (liveMode && key !== 'students' && key !== 'dashboard' && key !== 'cashier') {
-      notify('Live preview is limited', 'Only overview, students, and the read-only cashier are available live.', 'warning')
+    if (liveMode && key !== 'students' && key !== 'dashboard' && key !== 'cashier' && key !== 'classes') {
+      notify('Live preview is limited', 'Only overview, students, classes, and the read-only cashier are available live.', 'warning')
       return
     }
     setNav(key)
@@ -279,6 +284,7 @@ export default function App() {
     setStudents(demoStudents)
     setEnrollments(demoEnrollments)
     setPayments(demoPayments)
+    setFacultyProfile(null)
     setLiveMode(false)
     setLiveStats(null)
     setLiveAssessmentLines({})
@@ -320,6 +326,8 @@ export default function App() {
         nav={nav}
         term={term}
         live={liveMode}
+        userName={role === 'Faculty' ? facultyProfile?.name : undefined}
+        userDesk={role === 'Faculty' ? facultyProfile?.department : undefined}
         onExitLive={exitLive}
         onNavigate={navigate}
         onSearch={() => setCommandOpen(true)}
@@ -377,6 +385,16 @@ export default function App() {
               onToast={notify}
             />
           ))}
+
+        {nav === 'classes' && (
+          <FacultyClasses
+            faculty={facultyProfile}
+            live={liveMode}
+            term={term}
+            onOpenStudent={openStudent}
+            onToast={notify}
+          />
+        )}
 
         {nav === 'registration' && (
           <Registration

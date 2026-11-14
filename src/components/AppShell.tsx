@@ -33,6 +33,7 @@ const navGroups: Array<{ label: string; items: NavItem[] }> = [
     items: [
       { key: 'dashboard', label: 'Overview', icon: LayoutDashboard, hint: 'Today at a glance' },
       { key: 'students', label: 'Students', icon: UsersRound, hint: 'Search student records' },
+      { key: 'classes', label: 'My Classes', icon: BookOpenCheck, hint: 'Assigned subjects and rosters' },
     ],
   },
   {
@@ -61,6 +62,7 @@ export const navLabels: Record<NavKey, string> = {
   registration: 'Registration',
   cashier: 'Cashier',
   academics: 'Academics',
+  classes: 'My Classes',
   reports: 'Reports',
   administration: 'Administration',
 }
@@ -68,7 +70,7 @@ export const navLabels: Record<NavKey, string> = {
 const accessByRole: Record<Role, NavKey[]> = {
   Registrar: ['dashboard', 'students', 'registration', 'academics', 'reports'],
   Cashier: ['dashboard', 'students', 'cashier', 'reports'],
-  Faculty: ['dashboard', 'students', 'academics', 'reports'],
+  Faculty: ['dashboard', 'students', 'classes', 'academics', 'reports'],
   Accounting: ['dashboard', 'students', 'cashier', 'academics', 'reports'],
   Administrator: ['dashboard', 'students', 'registration', 'cashier', 'academics', 'reports', 'administration'],
 }
@@ -90,6 +92,8 @@ export function AppShell({
   nav,
   term,
   live = false,
+  userName,
+  userDesk,
   children,
   onNavigate,
   onSearch,
@@ -103,6 +107,8 @@ export function AppShell({
   nav: NavKey
   term: Term
   live?: boolean
+  userName?: string
+  userDesk?: string
   children: ReactNode
   onNavigate: (key: NavKey) => void
   onSearch: () => void
@@ -114,9 +120,17 @@ export function AppShell({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const allowed = accessByRole[role].filter(
-    (key) => !live || key === 'students' || key === 'dashboard' || key === 'cashier',
+    (key) =>
+      !live ||
+      key === 'students' ||
+      key === 'dashboard' ||
+      key === 'cashier' ||
+      key === 'classes',
   )
-  const user = userForRole[role]
+  const user = {
+    name: userName || userForRole[role].name,
+    desk: userDesk || userForRole[role].desk,
+  }
 
   function go(key: NavKey) {
     onNavigate(key)

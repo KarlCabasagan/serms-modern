@@ -31,6 +31,7 @@ interface CommandPaletteProps {
 const pageItems: Array<{ key: NavKey; label: string; meta: string }> = [
   { key: 'dashboard', label: 'Overview', meta: 'Today at a glance' },
   { key: 'students', label: 'Students', meta: 'Search student records' },
+  { key: 'classes', label: 'My Classes', meta: 'Assigned subjects and rosters' },
   { key: 'registration', label: 'Registration', meta: 'Subject offering, advising, COR' },
   { key: 'cashier', label: 'Cashier', meta: 'Payments and collections' },
   { key: 'academics', label: 'Academics', meta: 'Grades and faculty load' },
@@ -94,7 +95,11 @@ export default function CommandPalette({
   const matchedPages = useMemo(() => {
     const available = live
       ? pageItems.filter(
-          (item) => item.key === 'dashboard' || item.key === 'students' || item.key === 'cashier',
+          (item) =>
+            item.key === 'dashboard' ||
+            item.key === 'students' ||
+            item.key === 'cashier' ||
+            item.key === 'classes',
         )
       : pageItems
     if (!q) return available.slice(0, 4)
@@ -268,6 +273,8 @@ export default function CommandPalette({
                         ? BookOpen
                         : page.key === 'cashier'
                           ? CreditCard
+                          : page.key === 'classes'
+                            ? BookOpen
                           : page.key === 'academics'
                             ? GraduationCap
                             : page.key === 'reports'
