@@ -96,6 +96,13 @@ const [rosterDownload] = await Promise.all([
 ])
 assert.equal(rosterDownload.suggestedFilename(), 'CS-201-A-roster.csv')
 
+const rosterSearch = page.getByRole('textbox', { name: 'Search this class roster' })
+await rosterSearch.fill('no-such-student')
+assert.equal(await page.locator('.faculty-grid tbody tr').count(), 0)
+assert.equal(await page.getByText('No students match').count(), 1)
+await rosterSearch.fill('')
+assert.equal(await page.locator('.faculty-grid tbody tr').count(), 1)
+
 const mobile = await browser.newPage({
   viewport: { width: 390, height: 844 },
   isMobile: true,
