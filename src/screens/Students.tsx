@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ArrowRight, ChevronDown, CreditCard, Download, Plus, Search, SlidersHorizontal, UserRound, UsersRound } from 'lucide-react'
 import type { Student, StudentStatus } from '../types'
 import { formatMoney, fullName } from '../lib/format'
@@ -7,6 +7,7 @@ import { PageHeader } from '../components/AppShell'
 import { StudentDialog } from '../components/StudentDialog'
 
 const statusFilters: Array<'All' | StudentStatus> = ['All', 'Enrolled', 'Unregistered', 'Graduating', 'On leave']
+const PAGE_SIZE = 50
 
 export default function Students({
   students,
@@ -26,6 +27,7 @@ export default function Students({
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<(typeof statusFilters)[number]>('All')
   const [program, setProgram] = useState('All programs')
+  const [page, setPage] = useState(1)
   const [addOpen, setAddOpen] = useState(false)
 
   const programs = useMemo(
@@ -46,6 +48,14 @@ export default function Students({
       return matchesQuery && matchesStatus && matchesProgram
     })
   }, [students, query, status, program])
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, pageCount)
+  const visible = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+
+  useEffect(() => {
+    setPage(1)
+  }, [query, status, program])
 
   const totals = useMemo(() => {
     const enrolled = students.filter((student) => student.status === 'Enrolled' || student.status === 'Graduating').length
@@ -248,7 +258,7 @@ export default function Students({
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((student) => (
+                {visible.map((student) => (
                   <tr
                     key={student.id}
                     data-clickable="true"
@@ -327,13 +337,30 @@ export default function Students({
         {filtered.length > 0 && (
           <div className="card__footer">
             <span className="muted" style={{ fontSize: 10 }}>
-              {readOnly
-                ? `Showing ${filtered.length} of ${students.length} live records · read-only`
-                : `Showing ${filtered.length} of ${students.length} sample records · 1,331 in the live register`}
+              {filtered.length === 0
+                ? 'No matching records'
+                : `Showing ${(safePage - 1) * PAGE_SIZE + 1}–${Math.min(safePage * PAGE_SIZE, filtered.length)} of ${filtered.length} matching records`}
+              {readOnly ? ' · live · read-only' : ''}
             </span>
-            <span className="muted" style={{ fontSize: 10 }}>
-              Click a row to open the student workspace
-            </span>
+            <div className="pagination">
+              <button
+                className="btn btn--secondary btn--sm"
+                onClick={() => setPage((value) => Math.max(1, value - 1))}
+                disabled={safePage <= 1}
+              >
+                Previous
+              </button>
+              <span className="pagination__status">
+                Page {safePage} of {pageCount}
+              </span>
+              <button
+                className="btn btn--secondary btn--sm"
+                onClick={() => setPage((value) => Math.min(pageCount, value + 1))}
+                disabled={safePage >= pageCount}
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>
