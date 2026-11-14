@@ -90,6 +90,13 @@ await page.waitForTimeout(150)
 assert.equal(await page.locator('.page-title').innerText(), 'My Classes')
 assert.equal(await page.locator('.faculty-class').count(), 2)
 assert.equal(await page.locator('.faculty-grid tbody tr').count(), 1)
+assert.deepEqual(
+  await page.locator('.faculty-roster-table thead th').allTextContents(),
+  ['Student', 'Program / year', 'Prelim', 'Midterm', 'Semi-final', 'Final', 'Grade', ''],
+)
+await page.getByRole('button', { name: 'Edit grades' }).click()
+assert.equal(await page.locator('.grade-input').count(), 4)
+await page.getByRole('button', { name: 'Done editing' }).click()
 const [rosterDownload] = await Promise.all([
   page.waitForEvent('download'),
   page.getByRole('button', { name: 'Export', exact: true }).click(),
