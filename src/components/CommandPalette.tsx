@@ -14,13 +14,15 @@ import {
   UserRound,
   UsersRound,
 } from 'lucide-react'
-import type { NavKey, Payment, Student } from '../types'
+import type { NavKey, Payment, Role, Student } from '../types'
 import { formatDate, formatMoney, fullName } from '../lib/format'
+import { canAccess } from './AppShell'
 
 interface CommandPaletteProps {
   open: boolean
   students: Student[]
   payments: Payment[]
+  role: Role
   live?: boolean
   onClose: () => void
   onStudent: (id: string) => void
@@ -43,6 +45,7 @@ export default function CommandPalette({
   open,
   students,
   payments,
+  role,
   live = false,
   onClose,
   onStudent,
@@ -93,18 +96,19 @@ export default function CommandPalette({
   }, [q, payments])
 
   const matchedPages = useMemo(() => {
-    const available = live
-      ? pageItems.filter(
-          (item) =>
-            item.key === 'dashboard' ||
-            item.key === 'students' ||
-            item.key === 'cashier' ||
-            item.key === 'classes',
-        )
-      : pageItems
+    const available = pageItems
+      .filter((item) => canAccess(role, item.key))
+      .filter(
+        (item) =>
+          !live ||
+          item.key === 'dashboard' ||
+          item.key === 'students' ||
+          item.key === 'cashier' ||
+          item.key === 'classes',
+      )
     if (!q) return available.slice(0, 4)
     return available.filter((item) => `${item.label} ${item.meta}`.toLowerCase().includes(q)).slice(0, 4)
-  }, [q, live])
+  }, [q, live, role])
 
   const actions = useMemo(() => {
     const all = [

@@ -441,6 +441,7 @@ export default function App() {
         open={commandOpen}
         students={students}
         payments={payments}
+        role={role}
         live={liveMode}
         onClose={() => setCommandOpen(false)}
         onStudent={(id) => {
