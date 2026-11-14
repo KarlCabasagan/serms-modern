@@ -1286,6 +1286,18 @@ svg {
   gap: 4px;
   white-space: nowrap;
 }
+.faculty-roster-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 20px;
+  border-top: 1px solid var(--line);
+  background: #fdfaf5;
+}
+.faculty-roster-toolbar .search-field {
+  max-width: 280px;
+}
 
 .pagination {
   display: flex;

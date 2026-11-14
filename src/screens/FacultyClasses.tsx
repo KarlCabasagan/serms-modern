@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { BookOpenCheck, CalendarDays, ChevronRight, Loader2, MapPin, UsersRound } from 'lucide-react'
+import { BookOpenCheck, CalendarDays, ChevronRight, Loader2, MapPin, Search, UsersRound } from 'lucide-react'
 import type { FacultyProfile, FacultyStudent, Term } from '../types'
 import { Avatar, Badge, EmptyState, InfoStrip } from '../components/ui'
 import { PageHeader } from '../components/AppShell'
@@ -18,6 +18,7 @@ export default function FacultyClasses({
   onToast: (title: string, detail?: string) => void
 }) {
   const [selectedKey, setSelectedKey] = useState('')
+  const [rosterQuery, setRosterQuery] = useState('')
   const [rosters, setRosters] = useState<Record<string, FacultyStudent[]>>({})
   const [loadingRoster, setLoadingRoster] = useState(false)
   const toastRef = useRef(onToast)
@@ -65,6 +66,12 @@ export default function FacultyClasses({
 
   const roster =
     (selected && rosters[`${selected.code}|${selected.section}`]) ?? selected?.students ?? []
+  const q = rosterQuery.trim().toLowerCase()
+  const visibleRoster = q
+    ? roster.filter((student) =>
+        `${student.name} ${student.id} ${student.program}`.toLowerCase().includes(q),
+      )
+    : roster
 
   if (!faculty) {
     return (
@@ -152,7 +159,10 @@ export default function FacultyClasses({
                 <button
                   key={key}
                   className={`faculty-class ${active ? 'faculty-class--active' : ''}`}
-                  onClick={() => setSelectedKey(key)}
+                  onClick={() => {
+                    setSelectedKey(key)
+                    setRosterQuery('')
+                  }}
                   aria-pressed={active}
                 >
                   <span className="faculty-class__top">
@@ -183,17 +193,37 @@ export default function FacultyClasses({
                   {selected.room && <span><MapPin size={13} /> {selected.room}</span>}
                 </div>
               </div>
+              {roster.length > 0 && (
+                <div className="faculty-roster-toolbar">
+                  <div className="search-field">
+                    <Search size={14} />
+                    <input
+                      value={rosterQuery}
+                      onChange={(event) => setRosterQuery(event.target.value)}
+                      placeholder="Search this class…"
+                      aria-label="Search this class roster"
+                    />
+                  </div>
+                  <span className="result-count">
+                    <strong>{visibleRoster.length}</strong> of {roster.length} students
+                  </span>
+                </div>
+              )}
               {loadingRoster ? (
                 <EmptyState
                   icon={<Loader2 size={18} className="spin" />}
                   title="Loading class roster"
                   description="Reading the enrolled students for this section."
                 />
-              ) : roster.length === 0 ? (
+              ) : visibleRoster.length === 0 ? (
                 <EmptyState
-                  icon={<UsersRound size={18} />}
-                  title="No students enrolled"
-                  description="This section has no registration rows for the active term."
+                  icon={roster.length === 0 ? <UsersRound size={18} /> : <Search size={18} />}
+                  title={roster.length === 0 ? 'No students enrolled' : 'No students match'}
+                  description={
+                    roster.length === 0
+                      ? 'This section has no registration rows for the active term.'
+                      : 'Try a different name or student ID.'
+                  }
                 />
               ) : (
                 <div className="table-wrap">
@@ -211,7 +241,7 @@ export default function FacultyClasses({
                       </tr>
                     </thead>
                     <tbody>
-                      {roster.map((student) => (
+                      {visibleRoster.map((student) => (
                         <tr
                           key={student.id}
                           data-clickable="true"
