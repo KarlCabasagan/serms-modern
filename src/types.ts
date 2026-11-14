@@ -8,6 +8,7 @@ export type NavKey =
   | 'registration'
   | 'cashier'
   | 'academics'
+  | 'classes'
   | 'reports'
   | 'administration'
 
@@ -123,6 +124,38 @@ export interface FacultyMember {
   load: number
   subjects: number
   status: 'Complete' | 'Pending' | 'Overload'
+}
+
+export interface FacultyStudent {
+  id: string
+  name: string
+  program: string
+  year: string
+  prelim?: string
+  midterm?: string
+  prefinal?: string
+  final?: string
+  grade?: string
+  remark?: string
+}
+
+export interface FacultyClass {
+  code: string
+  title: string
+  section: string
+  units: number
+  schedule: string
+  room: string
+  capacity: number
+  enrolled: number
+  students: FacultyStudent[]
+}
+
+export interface FacultyProfile {
+  id: string
+  name: string
+  department: string
+  classes: FacultyClass[]
 }
 
 export interface Term {

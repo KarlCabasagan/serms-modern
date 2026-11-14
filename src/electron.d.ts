@@ -1,4 +1,4 @@
-import type { Enrollment, Payment, Student, Term } from './types'
+import type { Enrollment, FacultyProfile, FacultyStudent, Payment, Student, Term } from './types'
 
 export {}
 
@@ -7,6 +7,7 @@ interface LiveBootstrap {
   students: Student[]
   enrollments: Enrollment[]
   payments: Payment[]
+  faculty: FacultyProfile | null
   assessmentLines: Record<string, Array<{ code: string; label: string; amount: number }>>
   stats: {
     students: number
@@ -46,6 +47,10 @@ declare global {
           credentials: { username: string; password: string },
         ) => Promise<({ ok: true; message?: undefined } & LiveBootstrap) | { ok: false; message: string }>
         refresh: () => Promise<({ ok: true; message?: undefined } & LiveBootstrap) | { ok: false; message: string }>
+        facultyRoster: (payload: { code: string; section: string }) => Promise<
+          | { ok: true; students: FacultyStudent[] }
+          | { ok: false; message: string }
+        >
         assessment: (studid: string) => Promise<
           | { ok: true; lines: Array<{ code: string; label: string; amount: number }> }
           | { ok: false; message: string }

@@ -156,6 +156,14 @@ ipcMain.handle('live:refresh', async () => {
   }
 })
 
+ipcMain.handle('live:facultyRoster', async (_event, payload) => {
+  try {
+    return { ok: true, students: await live.facultyRoster(payload) }
+  } catch (error) {
+    return { ok: false, message: error?.message || 'The class roster could not be loaded.' }
+  }
+})
+
 ipcMain.handle('live:assessment', async (_event, studid) => {
   try {
     return { ok: true, lines: await live.assessmentLinesFor(studid) }

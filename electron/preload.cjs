@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('serms', {
   live: {
     connect: (credentials) => ipcRenderer.invoke('live:connect', credentials),
     refresh: () => ipcRenderer.invoke('live:refresh'),
+    facultyRoster: (payload) => ipcRenderer.invoke('live:facultyRoster', payload),
     assessment: (studid) => ipcRenderer.invoke('live:assessment', studid),
     saveGrades: (payload) => ipcRenderer.invoke('live:saveGrades', payload),
     disconnect: () => ipcRenderer.invoke('live:disconnect'),

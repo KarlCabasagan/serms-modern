@@ -3,6 +3,7 @@ const { BufferReader } = require('pg-protocol/dist/buffer-reader')
 
 let client = null
 let activeTerm = null
+let activeFacultyId = null
 let utf8Mode = true
 let decodeText = (buffer) => buffer.toString('utf8')
 const decodeUtf8String = BufferReader.prototype.string
@@ -123,6 +124,7 @@ async function disconnect() {
     client = null
   }
   activeTerm = null
+  activeFacultyId = null
   useUtf8()
 }
 
@@ -316,11 +318,14 @@ async function bootstrap() {
     status: 'Posted',
   }))
 
+  const faculty = await loadFaculty(sy, sem)
+
   return {
     term,
     students,
     enrollments,
     payments,
+    faculty,
     assessmentLines: {},
     stats: {
       students: students.length,
@@ -331,6 +336,99 @@ async function bootstrap() {
     },
     readOnly: true,
   }
+}
+
+async function loadFaculty(sy, sem) {
+  const profile = (
+    await client.query(
+      `select fu.empid, e.fullname, f.deptcode, d.deptname
+       from srgb.faculty_username fu
+       join pis.employee e on e.empid = fu.empid
+       left join srgb.faculty f on f.empid = fu.empid
+       left join srgb.department d on d.deptcode = f.deptcode
+       where lower(fu.username) = lower(current_user)
+       limit 1`,
+    )
+  ).rows[0]
+  if (!profile) {
+    activeFacultyId = null
+    return null
+  }
+  activeFacultyId = trim(profile.empid)
+
+  const classRows = (
+    await client.query(
+      `select ss.subjcode, subj.subjdesc, coalesce(subj.subjcredit, 0) as units,
+              ss.section, ss.days, ss.time, ss.room, ss.maxstud,
+              count(r.studid)::int as enrolled
+       from srgb.semsubject ss
+       join srgb.subject subj on subj.subjcode = ss.subjcode
+       left join srgb.registration r
+         on r.sy = ss.sy and r.sem = ss.sem and r.subjcode = ss.subjcode and r.section = ss.section
+       where ss.sy = $1 and ss.sem = $2 and ss.facultyid = $3
+       group by ss.subjcode, subj.subjdesc, subj.subjcredit, ss.section, ss.days, ss.time, ss.room, ss.maxstud
+       order by ss.subjcode, ss.section`,
+      [sy, sem, profile.empid],
+    )
+  ).rows
+
+  return {
+    id: trim(profile.empid),
+    name: trim(profile.fullname),
+    department: trim(profile.deptname),
+    classes: classRows.map((row) => {
+      const code = trim(row.subjcode)
+      const section = trim(row.section)
+      return {
+        code,
+        title: trim(row.subjdesc),
+        section,
+        units: num(row.units),
+        schedule: [trim(row.days), trim(row.time)].filter(Boolean).join(' · '),
+        room: trim(row.room),
+        capacity: num(row.maxstud),
+        enrolled: num(row.enrolled),
+        students: [],
+      }
+    }),
+  }
+}
+
+async function facultyRoster({ code, section }) {
+  if (!client || !activeTerm || !activeFacultyId) {
+    throw new Error('No faculty load is open.')
+  }
+  const rows = (
+    await client.query(
+      `select r.studid, s.studlastname, s.studfirstname, s.studmidname,
+              ss2.studlevel, p.progdesc, r.prelim1, r.prelim2, r.prelim3, r.prelim4, r.grade, r.remarks
+       from srgb.semsubject ss
+       join srgb.registration r
+         on r.sy = ss.sy and r.sem = ss.sem and r.subjcode = ss.subjcode and r.section = ss.section
+       join srgb.student s using (studid)
+       left join srgb.semstudent ss2
+         on ss2.sy = r.sy and ss2.sem = r.sem and ss2.studid = r.studid
+       left join srgb.program p on p.progcode = ss2.studmajor
+       where ss.sy = $1 and ss.sem = $2 and ss.facultyid = $3
+         and ss.subjcode = $4 and ss.section = $5
+       order by s.studlastname, s.studfirstname`,
+      [activeTerm.sy, activeTerm.sem, activeFacultyId, code, section],
+    )
+  ).rows
+  return rows.map((row) => ({
+    id: trim(row.studid),
+    name: [trim(row.studlastname), trim(row.studfirstname), trim(row.studmidname)]
+      .filter(Boolean)
+      .join(', '),
+    program: trim(row.progdesc),
+    year: yearLabel(row.studlevel),
+    prelim: trim(row.prelim1) || undefined,
+    midterm: trim(row.prelim2) || undefined,
+    prefinal: trim(row.prelim3) || undefined,
+    final: trim(row.prelim4) || undefined,
+    grade: trim(row.grade) || undefined,
+    remark: trim(row.remarks) || undefined,
+  }))
 }
 
 async function assessmentLinesFor(studid) {
@@ -390,4 +488,4 @@ async function saveGrades({ sy, sem, rows }) {
   }
 }
 
-module.exports = { connect, disconnect, bootstrap, saveGrades, assessmentLinesFor }
+module.exports = { connect, disconnect, bootstrap, saveGrades, assessmentLinesFor, facultyRoster }
