@@ -9,6 +9,9 @@ config/srgb.ini
 SERMS Modern.lnk
 .DS_Store
 Thumbs.db
+.codex/
+.gemini/
+.grok/
 graphify-out/.graphify_python
 graphify-out/.graphify_root
 graphify-out/.graphify_*.json
