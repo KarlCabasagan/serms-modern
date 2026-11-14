@@ -285,8 +285,8 @@ export function AppShell({
             <span className="live-banner__dot" />
             <div>
               <strong>Live school data.</strong> Student records, payments, and grades are real.
-              Payment posting and student edits are disabled. Grade entry is available from the
-              Grades tab and writes only after an explicit confirmation.
+              Payment posting and student edits are disabled. Grade edits are live: the class sheet
+              asks for confirmation, while My Classes saves a field on Enter or when you leave it.
             </div>
             <button className="btn btn--secondary btn--sm" onClick={onExitLive}>
               Return to demo
@@ -306,7 +306,7 @@ export function PageHeader({
   subtitle,
   actions,
 }: {
-  eyebrow: string
+  eyebrow?: string
   title: ReactNode
   subtitle?: string
   actions?: ReactNode
@@ -314,7 +314,7 @@ export function PageHeader({
   return (
     <header className="page-header">
       <div className="page-header__copy">
-        <div className="page-header__eyebrow">{eyebrow}</div>
+        {eyebrow && <div className="page-header__eyebrow">{eyebrow}</div>}
         <h1 className="page-title">{title}</h1>
         {subtitle && <p className="page-subtitle">{subtitle}</p>}
       </div>

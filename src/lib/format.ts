@@ -22,6 +22,29 @@ export function fullName(student: Student): string {
     .join(' ')
 }
 
+export function facultyDisplayName(value: string): string {
+  const clean = value.trim()
+  if (!clean.includes(',')) return titleCase(clean)
+  const [last, ...rest] = clean.split(',')
+  return titleCase(`${rest.join(',').trim()} ${last.trim()}`)
+}
+
+export function titleCaseDepartment(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map((word, index) => (index === 0 && word.length <= 3 ? word.toUpperCase() : titleCase(word)))
+    .join(' ')
+}
+
+function titleCase(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/\b[a-z]/g, (letter) => letter.toUpperCase())
+    .replace(/\bA\./g, 'A.')
+}
+
 export function shortName(student: Student): string {
   return `${student.firstName} ${student.lastName}`
 }

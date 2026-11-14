@@ -24,7 +24,13 @@ import Academics from './screens/Academics'
 import FacultyClasses from './screens/FacultyClasses'
 import Reports from './screens/Reports'
 import Administration from './screens/Administration'
-import { formatMoney, fullName, todayIso } from './lib/format'
+import {
+  facultyDisplayName,
+  formatMoney,
+  fullName,
+  titleCaseDepartment,
+  todayIso,
+} from './lib/format'
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -82,7 +88,7 @@ export default function App() {
     setSelectedStudentId(null)
     notify(
       'Live records loaded',
-      `${result.stats.students.toLocaleString()} students · ${result.term.label} · grade entry is confirmation-gated`,
+      `${result.stats.students.toLocaleString()} students · ${result.term.label} · grade edits save directly on My Classes`,
       'neutral',
     )
   }
@@ -327,8 +333,16 @@ export default function App() {
         nav={nav}
         term={term}
         live={liveMode}
-        userName={role === 'Faculty' ? facultyProfile?.name : undefined}
-        userDesk={role === 'Faculty' ? facultyProfile?.department : undefined}
+        userName={
+          role === 'Faculty' && facultyProfile
+            ? facultyDisplayName(facultyProfile.name)
+            : undefined
+        }
+        userDesk={
+          role === 'Faculty' && facultyProfile
+            ? titleCaseDepartment(facultyProfile.department || 'Faculty')
+            : undefined
+        }
         onExitLive={exitLive}
         onNavigate={navigate}
         onSearch={() => setCommandOpen(true)}
