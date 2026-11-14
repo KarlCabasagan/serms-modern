@@ -148,38 +148,51 @@ async function bootstrap() {
     sem,
   }
 
-  try {
-    await client.query(`
-      create or replace function pg_temp.safe_gpa(p_studid text)
-      returns real language plpgsql as $$
-      begin
-        return srgb.compute_gpa_all(p_studid);
-      exception when others then
-        return null;
-      end;
-      $$;
-    `)
-  } catch {
-    // The GPA is optional; the read-only preview should still open without this helper.
-  }
-
   const studentRows = (
     await client.query(
       `select s.studid, s.studlastname, s.studfirstname, s.studmidname, s.studsuffix,
               s.studgender, s.studbirthdate, s.studcontactno, s.studpermaddr,
               ss.studlevel, ss.studmajor, ss.registered, ss.studunits, ss.studgrad,
               p.progdesc, coalesce(d.deptcoll, '') as deptcoll, coalesce(c.collname, '') as collname,
-              coalesce(srgb.get_balance_perstudent(ss.sy, ss.sem, s.studid), 0) as balance,
-              coalesce(pg_temp.safe_gpa(s.studid), 0) as gpa,
-              coalesce(a.totalfee, 0) as assessment_total
+              coalesce(a.total, 0) as assessment_total,
+              coalesce(a.current_total, 0) as current_assessment_total,
+              greatest(coalesce(a.total, 0) - coalesce(pay.paid, 0), 0) as balance,
+              coalesce(g.gpa, 0) as gpa
        from srgb.semstudent ss
        join srgb.student s using (studid)
        left join srgb.program p on p.progcode = ss.studmajor
        left join srgb.department d on d.deptcode = p.progdept
        left join srgb.college c on c.collcode = d.deptcoll
-       left join lateral (
-         select * from srgb.get_assessment_summary_persem(ss.sy, ss.sem, s.studid)
-       ) a on true
+       left join (
+         select ad.studid,
+                sum(ad.amt) as total,
+                sum(case when not coalesce(f.is_oldaccount, false) then ad.amt else 0 end) as current_total
+         from srgb.ass_details ad
+         left join srgb.fees f using (feecode)
+         where ad.sy = $1 and ad.sem = $2
+         group by ad.studid
+       ) a using (studid)
+       left join (
+         select ch.studid, sum(cd.amt) as paid
+         from srgb.collection_details cd
+         join srgb.collection_header ch using (orno)
+         where ch.sy = $1 and ch.sem = $2
+         group by ch.studid
+       ) pay using (studid)
+       left join (
+         select r.studid,
+                sum(subj.subjcredit * v.grade_equiv) / nullif(sum(subj.subjcredit), 0) as gpa
+         from srgb.registration r
+         join srgb.subject subj using (subjcode)
+         join srgb.validgrades v
+           on v.grade = case
+                when r.grade in ('INC', '4.00') and coalesce(r.gcompl, '') <> '' then r.gcompl
+                else r.grade
+              end
+          and (case when r.grade in ('INC', '4.00') then v.completion else true end)
+         where subj.subjgpa and r.grade is not null and subj.subjdept <> 'ROTC' and v.grade_equiv > 0
+         group by r.studid
+       ) g using (studid)
        where ss.sy = $1 and ss.sem = $2
        order by s.studlastname, s.studfirstname`,
       [sy, sem],
@@ -187,7 +200,7 @@ async function bootstrap() {
   ).rows
 
   const students = studentRows.map((row) => {
-    const assessmentTotal = num(row.assessment_total)
+    const assessmentTotal = num(row.current_assessment_total)
     const balance = num(row.balance)
     const registered = Boolean(row.registered)
     return {
