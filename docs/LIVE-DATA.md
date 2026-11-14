@@ -74,6 +74,7 @@ This is why the feature only works on the school network: it is a direct databas
 - The live assessment total is read from `get_assessment_summary_persem`, and fee lines are read
   from `srgb.ass_details` joined to `srgb.fees`. If a student has no detail rows, the live UI says
   so instead of showing the demo breakdown.
+- Detects `server_encoding` before reading rows. If the school database is `SQL_ASCII`, `LATIN1`, or `WIN1252`, it switches the session to the matching single-byte client encoding and decodes text accordingly. This fixes `invalid byte sequence for encoding "UTF8": 0xd1 0x41` on names such as `ÑA`.
 - Never stores the password in the renderer or on disk.
 
 `src/screens/Administration.tsx` — **Test connection** and **Open live records** dialog.

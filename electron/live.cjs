@@ -1,6 +1,30 @@
 const { Client } = require('pg')
+const { BufferReader } = require('pg-protocol/dist/buffer-reader')
 
 let client = null
+let utf8Mode = true
+let decodeText = (buffer) => buffer.toString('utf8')
+const decodeUtf8String = BufferReader.prototype.string
+const decodeUtf8CString = BufferReader.prototype.cstring
+
+// pg decodes every text field as UTF-8. The school database is SQL_ASCII and
+// contains Latin-1 bytes such as Ñ, which makes PostgreSQL reject the SELECT
+// when the client asks for UTF-8. Switch both sides to a lossless single-byte
+// decoding after login, before any row is read.
+BufferReader.prototype.string = function string(length) {
+  if (utf8Mode) return decodeUtf8String.call(this, length)
+  const value = decodeText(this.buffer.subarray(this.offset, this.offset + length))
+  this.offset += length
+  return value
+}
+
+BufferReader.prototype.cstring = function cstring() {
+  if (utf8Mode) return decodeUtf8CString.call(this)
+  const start = this.offset
+  const end = this.buffer.indexOf(0, start)
+  this.offset = end === -1 ? this.buffer.length : end + 1
+  return decodeText(this.buffer.subarray(start, end === -1 ? this.buffer.length : end))
+}
 
 function num(value) {
   const parsed = Number(value)
@@ -34,6 +58,31 @@ function isoDate(value) {
   return String(value).slice(0, 10)
 }
 
+function useUtf8() {
+  utf8Mode = true
+  decodeText = (buffer) => buffer.toString('utf8')
+}
+
+async function configureClientEncoding(db) {
+  const row = (await db.query('show server_encoding')).rows[0]
+  const serverEncoding = String(row?.server_encoding || '').toUpperCase()
+  if (!serverEncoding || serverEncoding === 'UTF8') {
+    useUtf8()
+    return
+  }
+
+  const clientEncoding = serverEncoding === 'WIN1252' ? 'WIN1252' : 'LATIN1'
+  const decoderLabel = serverEncoding === 'WIN1252' ? 'windows-1252' : 'iso-8859-1'
+  await db.query(`set client_encoding to '${clientEncoding}'`)
+  utf8Mode = false
+  try {
+    const decoder = new TextDecoder(decoderLabel)
+    decodeText = (buffer) => decoder.decode(buffer)
+  } catch {
+    decodeText = (buffer) => buffer.toString('latin1')
+  }
+}
+
 function createClient(config, credentials) {
   return new Client({
     host: config.host,
@@ -53,9 +102,16 @@ async function connect(config, credentials) {
     client = null
   }
   const next = createClient(config, credentials)
-  await next.connect()
-  client = next
-  return bootstrap()
+  try {
+    await next.connect()
+    await configureClientEncoding(next)
+    client = next
+    return await bootstrap()
+  } catch (error) {
+    if (client === next) client = null
+    await next.end().catch(() => {})
+    throw error
+  }
 }
 
 async function disconnect() {
@@ -63,6 +119,7 @@ async function disconnect() {
     await client.end().catch(() => {})
     client = null
   }
+  useUtf8()
 }
 
 async function bootstrap() {

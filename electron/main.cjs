@@ -131,13 +131,17 @@ ipcMain.handle('live:connect', async (_event, credentials) => {
       /timeout|getaddrinfo|connect|network|unreachable/i.test(String(error?.message || '')) ||
       ['ECONNREFUSED', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH', 'ENOTFOUND'].includes(error?.code)
     const authIssue = error?.code === '28P01' || /password authentication failed/i.test(String(error?.message || ''))
+    const encodingIssue =
+      error?.code === '22021' || /invalid byte sequence for encoding/i.test(String(error?.message || ''))
     return {
       ok: false,
       message: networkIssue
         ? 'The school server is not reachable. Check the school Wi-Fi and try again.'
         : authIssue
           ? 'The school server rejected that username or password.'
-          : `The live records could not be loaded: ${error?.message || 'unknown database error'}`,
+          : encodingIssue
+            ? 'The school database contains text that is not valid UTF-8. The app tried its Latin-1 fallback; ask the database administrator to confirm the server encoding.'
+            : `The live records could not be loaded: ${error?.message || 'unknown database error'}`,
     }
   }
 })

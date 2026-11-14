@@ -50,7 +50,7 @@ The current Graphify output is in [`graphify-out/`](graphify-out/), with the aud
 
 ## What is in the prototype
 
-- Login with a school PostgreSQL account for live records, or **Open demo** for synthetic data; responsive app shell.
+- Login with a school PostgreSQL account for live records, or **Open demo** for synthetic data; handles the school's SQL_ASCII/Latin-1 text encoding; responsive app shell.
 - Role-aware navigation: Registrar, Cashier, Faculty, Accounting, Administrator.
 - Dashboard with enrollment pulse, outstanding balances, collections, checklist, activity.
 - Student directory with search, status/program filters, add/edit student, CSV export, and a consolidated student workspace:
