@@ -1,7 +1,7 @@
 {
   "name": "serms-modern",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "SERMS Modern — a cleaner front end for St. Peter's College student records",
   "author": "St. Peter's College",
   "type": "module",
