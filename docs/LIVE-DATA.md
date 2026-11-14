@@ -86,6 +86,7 @@ This is why the feature only works on the school network: it is a direct databas
 - Reads a section roster from `srgb.registration` joined to `srgb.student`, with program/year from `srgb.semstudent`.
 - Rosters are loaded per selected section (`live:facultyRoster`); they are not part of the login bootstrap.
 - The Faculty role gets **My Classes** in live mode. The page shows subject, section, schedule, room, enrolled count, and the student roster, with search and CSV export.
+- Inline grade edits use `live:facultyGrade`, which verifies the section belongs to the signed-in faculty account, updates `prelim1`–`prelim4`, and returns the trigger-computed grade. The table shows Prelim, Midterm, Semi-final, Final, and the computed Grade. Enter saves the row and moves focus to the next student in the same term; leaving a field also saves it. The edit mode must be enabled explicitly for the session.
 
 ## Login performance
 

@@ -8,6 +8,12 @@
 - Live faculty identity mapping through `srgb.faculty_username`, `pis.employee`, and `srgb.semsubject`.
 - Faculty dashboard shortcut and role-aware command palette entries.
 
+### Added (faculty grade grid)
+
+- All four grading terms are shown in My Classes: Prelim, Midterm, Semi-final, Final, plus the trigger-computed Grade.
+- Inline grade editing with an explicit Edit grades mode.
+- Enter saves the current student and advances focus to the next student in the same term; leaving a field saves as well.
+
 ### Changed
 
 - Live login now loads the dashboard first instead of opening the full student directory.

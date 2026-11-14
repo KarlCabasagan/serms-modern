@@ -63,9 +63,9 @@ The current Graphify output is in [`graphify-out/`](graphify-out/), with the aud
 - Registration desk with queue, student selection, and open sections.
 - Cashier desk with receipts, receipt lookup, balances, and a working payment flow with OR preview.
 - Printable COR, assessment, statement of account, and TOR previews from the student workspace (screen + print CSS).
-- Faculty **My Classes** workspace: assigned subjects, live class rosters, roster search, CSV export, and direct student access.
+- Faculty **My Classes** workspace: assigned subjects, live class rosters, roster search, CSV export, direct student access, and inline Prelim/Midterm/Semi-final/Final grade editing with Enter-to-advance.
 
-  ![Faculty workspace](screenshots/faculty-classes-demo.png)
+  ![Faculty workspace](screenshots/faculty-classes-refined.png)
 - Academics desk with grade sheets, faculty load, Dean's List, and a grade-entry sheet.
 - Report library with categories, favourites, and recent reports.
 - Administration with term, fees, access, receipt ranges, audit, and a live **school server connection test**.
